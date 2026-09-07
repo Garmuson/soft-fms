@@ -5,13 +5,13 @@ import { Bar, EmptyState, PageHeader, Panel, SkeletonCards, inputCls } from "@/c
 import { RoleGate } from "@/components/RoleGate";
 import { rollupHubs, utilColor } from "@/lib/fleet";
 
-type Search = { q?: string; util?: string; alerts?: string };
+type Search = { q?: string | undefined; util?: string | undefined; alerts?: string | undefined };
 
 export const Route = createFileRoute("/_authenticated/hubs")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-    util: typeof s.util === "string" ? s.util : undefined,
-    alerts: typeof s.alerts === "string" ? s.alerts : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
+    util: typeof s["util"] === "string" ? s["util"] : undefined,
+    alerts: typeof s["alerts"] === "string" ? s["alerts"] : undefined,
   }),
   head: () => ({
     meta: [

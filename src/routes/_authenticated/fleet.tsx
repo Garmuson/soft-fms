@@ -28,16 +28,23 @@ import {
 } from "@/lib/fleet";
 import { useAuth } from "@/hooks/use-auth";
 
-type Search = { q?: string; hub?: number; type?: string; status?: string; page?: number; size?: number };
+type Search = {
+  q?: string | undefined;
+  hub?: number | undefined;
+  type?: string | undefined;
+  status?: string | undefined;
+  page?: number | undefined;
+  size?: number | undefined;
+};
 
 export const Route = createFileRoute("/_authenticated/fleet")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === "string" ? s.q : undefined,
-    hub: s.hub ? Number(s.hub) : undefined,
-    type: typeof s.type === "string" ? s.type : undefined,
-    status: typeof s.status === "string" ? s.status : undefined,
-    page: s.page ? Number(s.page) : undefined,
-    size: s.size ? Number(s.size) : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
+    hub: s["hub"] ? Number(s["hub"]) : undefined,
+    type: typeof s["type"] === "string" ? s["type"] : undefined,
+    status: typeof s["status"] === "string" ? s["status"] : undefined,
+    page: s["page"] ? Number(s["page"]) : undefined,
+    size: s["size"] ? Number(s["size"]) : undefined,
   }),
   head: () => ({
     meta: [

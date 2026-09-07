@@ -2,16 +2,16 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AlertsView, type AlertTab } from "@/components/AlertsView";
 import { RoleGate } from "@/components/RoleGate";
 
-type Search = { level?: AlertTab; hub?: number };
+type Search = { level?: AlertTab | undefined; hub?: number | undefined };
 
 export const Route = createFileRoute("/_authenticated/alerts")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     level: (["all", "critical", "warning", "info", "acknowledged"] as const).includes(
-      s.level as AlertTab,
+      s["level"] as AlertTab,
     )
-      ? (s.level as AlertTab)
+      ? (s["level"] as AlertTab)
       : undefined,
-    hub: s.hub ? Number(s.hub) : undefined,
+    hub: s["hub"] ? Number(s["hub"]) : undefined,
   }),
   head: () => ({
     meta: [

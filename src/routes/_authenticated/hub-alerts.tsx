@@ -4,14 +4,14 @@ import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
 import { EmptyState, Panel } from "@/components/kit";
 
-type Search = { level?: AlertTab };
+type Search = { level?: AlertTab | undefined };
 
 export const Route = createFileRoute("/_authenticated/hub-alerts")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     level: (["all", "critical", "warning", "info", "acknowledged"] as const).includes(
-      s.level as AlertTab,
+      s["level"] as AlertTab,
     )
-      ? (s.level as AlertTab)
+      ? (s["level"] as AlertTab)
       : undefined,
   }),
   head: () => ({

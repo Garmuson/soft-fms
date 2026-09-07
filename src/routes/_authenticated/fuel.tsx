@@ -116,7 +116,7 @@ function FuelPage() {
                     type="monotone"
                     dataKey={t.value}
                     name={t.label}
-                    stroke={COLORS[i]}
+                    stroke={COLORS[i] ?? "#7d8590"}
                     dot={false}
                     strokeWidth={1.5}
                   />

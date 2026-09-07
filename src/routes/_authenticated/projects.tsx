@@ -15,13 +15,17 @@ import { MapPanel } from "@/components/MapPanel";
 import { RoleGate } from "@/components/RoleGate";
 import { fmtDate, projectAlignment, typeLabel } from "@/lib/fleet";
 
-type Search = { hub?: number; status?: string; q?: string };
+type Search = {
+  hub?: number | undefined;
+  status?: string | undefined;
+  q?: string | undefined;
+};
 
 export const Route = createFileRoute("/_authenticated/projects")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    hub: s.hub ? Number(s.hub) : undefined,
-    status: typeof s.status === "string" ? s.status : undefined,
-    q: typeof s.q === "string" ? s.q : undefined,
+    hub: s["hub"] ? Number(s["hub"]) : undefined,
+    status: typeof s["status"] === "string" ? s["status"] : undefined,
+    q: typeof s["q"] === "string" ? s["q"] : undefined,
   }),
   head: () => ({
     meta: [

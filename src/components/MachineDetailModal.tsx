@@ -75,7 +75,7 @@ export function MachineDetailModal({
     if (!machine) return;
     const { error } = await supabase
       .from("machines")
-      .update({ status: status as Machine["status"] })
+      .update({ status: status as "active" })
       .eq("id", machine.id);
     if (error) toast.error("Could not update this machine", { description: error.message });
     else toast.success(`${machine.unit_id} marked ${status}`);

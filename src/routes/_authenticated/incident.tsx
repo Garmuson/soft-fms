@@ -56,7 +56,10 @@ function IncidentPage() {
   const [busy, setBusy] = useState(false);
 
   function detect() {
-    if (!navigator.geolocation) return toast.error("Location is not available");
+    if (!navigator.geolocation) {
+      toast.error("Location is not available");
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (p) => setCoords({ lat: p.coords.latitude, lng: p.coords.longitude }),
       () => toast.error("Could not read your location"),
