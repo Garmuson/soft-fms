@@ -42,9 +42,15 @@ export function CommandDashboard({ readOnly = false }: { readOnly?: boolean }) {
   const count = (s: string) => machines.filter((m) => m.status === s).length;
   const active = count("active");
   const util = total ? Math.round((active / total) * 100) : 0;
+  // Freshness is measured against the newest telemetry report in the fleet, so a
+  // tracker that stopped reporting 2 minutes before its peers counts as offline.
+  const newestReport = machines.reduce(
+    (a, m) => Math.max(a, new Date(m.last_seen).getTime()),
+    0,
+  );
   const gpsUp = total
     ? Math.round(
-        (machines.filter((m) => Date.now() - new Date(m.last_seen).getTime() < 120_000).length /
+        (machines.filter((m) => newestReport - new Date(m.last_seen).getTime() < 120_000).length /
           total) *
           100,
       )
