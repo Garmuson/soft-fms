@@ -34,7 +34,7 @@ export function MachineDetailModal({
   onClose: () => void;
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Overview");
-  const [hours, setHours] = useState(24);
+
   const { readOnly, role } = useAuth();
 
   const { data: machine, isLoading } = useQuery({
@@ -64,7 +64,7 @@ export function MachineDetailModal({
     ...alertsQuery(machine?.hub_id ?? null),
     enabled: !!machine?.hub_id,
   });
-  const { data: track = [] } = useQuery(gpsTrackQuery(machine?.id ?? null, hours));
+  });
 
   if (!unitId) return null;
   const hub = hubs.find((h) => h.id === machine?.hub_id);
