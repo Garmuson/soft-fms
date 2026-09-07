@@ -1,5 +1,14 @@
 import "leaflet/dist/leaflet.css";
-import { CircleMarker, MapContainer, Polyline, Popup, TileLayer, Rectangle } from "react-leaflet";
+import {
+  Circle,
+  CircleMarker,
+  MapContainer,
+  Polyline,
+  Popup,
+  TileLayer,
+  Rectangle,
+  useMapEvents,
+} from "react-leaflet";
 import { STATUS_HEX, statusLabel, timeAgo, typeLabel } from "@/lib/fleet";
 
 export type MapMachine = {
@@ -17,6 +26,24 @@ export type MapMachine = {
 
 export type MapHub = { id: number; name: string; lat_center: number; lng_center: number };
 
+export type MapFence = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  radius_m: number;
+  is_active: boolean;
+};
+
+function ClickCatcher({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      onMapClick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
+}
+
 export default function FleetMap({
   machines,
   hubs = [],
@@ -24,6 +51,9 @@ export default function FleetMap({
   zoom = 7,
   height = 460,
   track,
+  fences = [],
+  pin,
+  onMapClick,
   onSelect,
 }: {
   machines: MapMachine[];
@@ -32,6 +62,9 @@ export default function FleetMap({
   zoom?: number;
   height?: number;
   track?: { points: [number, number][] };
+  fences?: MapFence[];
+  pin?: { lat: number; lng: number; label?: string } | undefined;
+  onMapClick?: (lat: number, lng: number) => void;
   onSelect?: (unitId: string) => void;
 }) {
   return (
@@ -48,6 +81,7 @@ export default function FleetMap({
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           className="map-dark-tiles"
         />
+        {onMapClick && <ClickCatcher onMapClick={onMapClick} />}
         {hubs.map((h) => (
           <Rectangle
             key={h.id}
@@ -58,8 +92,38 @@ export default function FleetMap({
             pathOptions={{ color: "#d4a017", weight: 1, fillOpacity: 0.03, dashArray: "3 4" }}
           />
         ))}
+        {fences.map((f) => (
+          <Circle
+            key={f.id}
+            center={[Number(f.lat), Number(f.lng)]}
+            radius={Number(f.radius_m)}
+            pathOptions={{
+              color: f.is_active ? "#388bfd" : "#7d8590",
+              weight: 1.5,
+              fillOpacity: 0.08,
+              dashArray: f.is_active ? undefined : "4 4",
+            }}
+          >
+            <Popup>
+              <div className="space-y-0.5 text-xs">
+                <p className="font-medium text-foreground">{f.name}</p>
+                <p className="num text-muted-foreground">{Math.round(f.radius_m)} m radius</p>
+                <p className="text-muted-foreground">{f.is_active ? "Active" : "Switched off"}</p>
+              </div>
+            </Popup>
+          </Circle>
+        ))}
         {track && track.points.length > 1 && (
           <Polyline positions={track.points} pathOptions={{ color: "#2ea043", weight: 3 }} />
+        )}
+        {pin && (
+          <CircleMarker
+            center={[Number(pin.lat), Number(pin.lng)]}
+            radius={8}
+            pathOptions={{ color: "#d4a017", fillColor: "#d4a017", fillOpacity: 0.9, weight: 2 }}
+          >
+            {pin.label && <Popup>{pin.label}</Popup>}
+          </CircleMarker>
         )}
         {machines
           .filter((m) => m.lat != null && m.lng != null)

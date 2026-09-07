@@ -12,23 +12,29 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated/activity'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDevicesRouteImport } from './routes/_authenticated/devices'
 import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
 import { Route as AuthenticatedFuelEntryRouteImport } from './routes/_authenticated/fuel-entry'
 import { Route as AuthenticatedFuelLogRouteImport } from './routes/_authenticated/fuel-log'
+import { Route as AuthenticatedGeofencesRouteImport } from './routes/_authenticated/geofences'
+import { Route as AuthenticatedHandbookRouteImport } from './routes/_authenticated/handbook'
 import { Route as AuthenticatedHubAlertsRouteImport } from './routes/_authenticated/hub-alerts'
 import { Route as AuthenticatedHubDashboardRouteImport } from './routes/_authenticated/hub-dashboard'
 import { Route as AuthenticatedHubReportsRouteImport } from './routes/_authenticated/hub-reports'
 import { Route as AuthenticatedHubsRouteImport } from './routes/_authenticated/hubs'
+import { Route as AuthenticatedIdlingRouteImport } from './routes/_authenticated/idling'
 import { Route as AuthenticatedIncidentRouteImport } from './routes/_authenticated/incident'
 import { Route as AuthenticatedInspectRouteImport } from './routes/_authenticated/inspect'
 import { Route as AuthenticatedMyMachinesRouteImport } from './routes/_authenticated/my-machines'
 import { Route as AuthenticatedOperatorDashboardRouteImport } from './routes/_authenticated/operator-dashboard'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedScorecardsRouteImport } from './routes/_authenticated/scorecards'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
@@ -50,6 +56,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
   id: '/alerts',
   path: '/alerts',
@@ -63,6 +74,11 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDevicesRoute = AuthenticatedDevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
@@ -85,6 +101,16 @@ const AuthenticatedFuelLogRoute = AuthenticatedFuelLogRouteImport.update({
   path: '/fuel-log',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGeofencesRoute = AuthenticatedGeofencesRouteImport.update({
+  id: '/geofences',
+  path: '/geofences',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHandbookRoute = AuthenticatedHandbookRouteImport.update({
+  id: '/handbook',
+  path: '/handbook',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubAlertsRoute = AuthenticatedHubAlertsRouteImport.update({
   id: '/hub-alerts',
   path: '/hub-alerts',
@@ -104,6 +130,11 @@ const AuthenticatedHubReportsRoute = AuthenticatedHubReportsRouteImport.update({
 const AuthenticatedHubsRoute = AuthenticatedHubsRouteImport.update({
   id: '/hubs',
   path: '/hubs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIdlingRoute = AuthenticatedIdlingRouteImport.update({
+  id: '/idling',
+  path: '/idling',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedIncidentRoute = AuthenticatedIncidentRouteImport.update({
@@ -135,6 +166,11 @@ const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedScorecardsRoute = AuthenticatedScorecardsRouteImport.update({
+  id: '/scorecards',
+  path: '/scorecards',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -172,23 +208,29 @@ const AuthenticatedMachineUnitIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/devices': typeof AuthenticatedDevicesRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
   '/fuel-log': typeof AuthenticatedFuelLogRoute
+  '/geofences': typeof AuthenticatedGeofencesRoute
+  '/handbook': typeof AuthenticatedHandbookRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/idling': typeof AuthenticatedIdlingRoute
   '/incident': typeof AuthenticatedIncidentRoute
   '/inspect': typeof AuthenticatedInspectRoute
   '/my-machines': typeof AuthenticatedMyMachinesRoute
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -199,23 +241,29 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/activity': typeof AuthenticatedActivityRoute
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/devices': typeof AuthenticatedDevicesRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
   '/fuel-log': typeof AuthenticatedFuelLogRoute
+  '/geofences': typeof AuthenticatedGeofencesRoute
+  '/handbook': typeof AuthenticatedHandbookRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/idling': typeof AuthenticatedIdlingRoute
   '/incident': typeof AuthenticatedIncidentRoute
   '/inspect': typeof AuthenticatedInspectRoute
   '/my-machines': typeof AuthenticatedMyMachinesRoute
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -228,23 +276,29 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/devices': typeof AuthenticatedDevicesRoute
   '/_authenticated/fleet': typeof AuthenticatedFleetRoute
   '/_authenticated/fuel': typeof AuthenticatedFuelRoute
   '/_authenticated/fuel-entry': typeof AuthenticatedFuelEntryRoute
   '/_authenticated/fuel-log': typeof AuthenticatedFuelLogRoute
+  '/_authenticated/geofences': typeof AuthenticatedGeofencesRoute
+  '/_authenticated/handbook': typeof AuthenticatedHandbookRoute
   '/_authenticated/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/_authenticated/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/_authenticated/hub-reports': typeof AuthenticatedHubReportsRoute
   '/_authenticated/hubs': typeof AuthenticatedHubsRoute
+  '/_authenticated/idling': typeof AuthenticatedIdlingRoute
   '/_authenticated/incident': typeof AuthenticatedIncidentRoute
   '/_authenticated/inspect': typeof AuthenticatedInspectRoute
   '/_authenticated/my-machines': typeof AuthenticatedMyMachinesRoute
   '/_authenticated/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/scorecards': typeof AuthenticatedScorecardsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -257,23 +311,29 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/activity'
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/devices'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
     | '/fuel-log'
+    | '/geofences'
+    | '/handbook'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
     | '/hubs'
+    | '/idling'
     | '/incident'
     | '/inspect'
     | '/my-machines'
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/scorecards'
     | '/settings'
     | '/tasks'
     | '/users'
@@ -284,23 +344,29 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/activity'
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/devices'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
     | '/fuel-log'
+    | '/geofences'
+    | '/handbook'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
     | '/hubs'
+    | '/idling'
     | '/incident'
     | '/inspect'
     | '/my-machines'
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/scorecards'
     | '/settings'
     | '/tasks'
     | '/users'
@@ -312,23 +378,29 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/activity'
     | '/_authenticated/alerts'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
+    | '/_authenticated/devices'
     | '/_authenticated/fleet'
     | '/_authenticated/fuel'
     | '/_authenticated/fuel-entry'
     | '/_authenticated/fuel-log'
+    | '/_authenticated/geofences'
+    | '/_authenticated/handbook'
     | '/_authenticated/hub-alerts'
     | '/_authenticated/hub-dashboard'
     | '/_authenticated/hub-reports'
     | '/_authenticated/hubs'
+    | '/_authenticated/idling'
     | '/_authenticated/incident'
     | '/_authenticated/inspect'
     | '/_authenticated/my-machines'
     | '/_authenticated/operator-dashboard'
     | '/_authenticated/projects'
     | '/_authenticated/reports'
+    | '/_authenticated/scorecards'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
     | '/_authenticated/users'
@@ -366,6 +438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/activity': {
+      id: '/_authenticated/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AuthenticatedActivityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/alerts': {
       id: '/_authenticated/alerts'
       path: '/alerts'
@@ -385,6 +464,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/devices': {
+      id: '/_authenticated/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof AuthenticatedDevicesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/fleet': {
@@ -415,6 +501,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFuelLogRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/geofences': {
+      id: '/_authenticated/geofences'
+      path: '/geofences'
+      fullPath: '/geofences'
+      preLoaderRoute: typeof AuthenticatedGeofencesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/handbook': {
+      id: '/_authenticated/handbook'
+      path: '/handbook'
+      fullPath: '/handbook'
+      preLoaderRoute: typeof AuthenticatedHandbookRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hub-alerts': {
       id: '/_authenticated/hub-alerts'
       path: '/hub-alerts'
@@ -441,6 +541,13 @@ declare module '@tanstack/react-router' {
       path: '/hubs'
       fullPath: '/hubs'
       preLoaderRoute: typeof AuthenticatedHubsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/idling': {
+      id: '/_authenticated/idling'
+      path: '/idling'
+      fullPath: '/idling'
+      preLoaderRoute: typeof AuthenticatedIdlingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/incident': {
@@ -483,6 +590,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/scorecards': {
+      id: '/_authenticated/scorecards'
+      path: '/scorecards'
+      fullPath: '/scorecards'
+      preLoaderRoute: typeof AuthenticatedScorecardsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -531,23 +645,29 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDevicesRoute: typeof AuthenticatedDevicesRoute
   AuthenticatedFleetRoute: typeof AuthenticatedFleetRoute
   AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
   AuthenticatedFuelEntryRoute: typeof AuthenticatedFuelEntryRoute
   AuthenticatedFuelLogRoute: typeof AuthenticatedFuelLogRoute
+  AuthenticatedGeofencesRoute: typeof AuthenticatedGeofencesRoute
+  AuthenticatedHandbookRoute: typeof AuthenticatedHandbookRoute
   AuthenticatedHubAlertsRoute: typeof AuthenticatedHubAlertsRoute
   AuthenticatedHubDashboardRoute: typeof AuthenticatedHubDashboardRoute
   AuthenticatedHubReportsRoute: typeof AuthenticatedHubReportsRoute
   AuthenticatedHubsRoute: typeof AuthenticatedHubsRoute
+  AuthenticatedIdlingRoute: typeof AuthenticatedIdlingRoute
   AuthenticatedIncidentRoute: typeof AuthenticatedIncidentRoute
   AuthenticatedInspectRoute: typeof AuthenticatedInspectRoute
   AuthenticatedMyMachinesRoute: typeof AuthenticatedMyMachinesRoute
   AuthenticatedOperatorDashboardRoute: typeof AuthenticatedOperatorDashboardRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedScorecardsRoute: typeof AuthenticatedScorecardsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -557,23 +677,29 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDevicesRoute: AuthenticatedDevicesRoute,
   AuthenticatedFleetRoute: AuthenticatedFleetRoute,
   AuthenticatedFuelRoute: AuthenticatedFuelRoute,
   AuthenticatedFuelEntryRoute: AuthenticatedFuelEntryRoute,
   AuthenticatedFuelLogRoute: AuthenticatedFuelLogRoute,
+  AuthenticatedGeofencesRoute: AuthenticatedGeofencesRoute,
+  AuthenticatedHandbookRoute: AuthenticatedHandbookRoute,
   AuthenticatedHubAlertsRoute: AuthenticatedHubAlertsRoute,
   AuthenticatedHubDashboardRoute: AuthenticatedHubDashboardRoute,
   AuthenticatedHubReportsRoute: AuthenticatedHubReportsRoute,
   AuthenticatedHubsRoute: AuthenticatedHubsRoute,
+  AuthenticatedIdlingRoute: AuthenticatedIdlingRoute,
   AuthenticatedIncidentRoute: AuthenticatedIncidentRoute,
   AuthenticatedInspectRoute: AuthenticatedInspectRoute,
   AuthenticatedMyMachinesRoute: AuthenticatedMyMachinesRoute,
   AuthenticatedOperatorDashboardRoute: AuthenticatedOperatorDashboardRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedScorecardsRoute: AuthenticatedScorecardsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,

@@ -284,3 +284,123 @@ export const gpsTrackQuery = (machineId: string | null, hours: number) =>
           .order("recorded_at"),
       ),
   });
+
+/** GPS history between two explicit instants — used by history playback. */
+export const gpsRangeQuery = (machineId: string | null, fromIso: string, toIso: string) =>
+  queryOptions({
+    queryKey: ["gps-range", machineId, fromIso, toIso],
+    enabled: !!machineId,
+    queryFn: () =>
+      unwrap<{ lat: number; lng: number; speed_kmh: number; recorded_at: string }[]>(
+        supabase
+          .from("gps_tracks")
+          .select("lat, lng, speed_kmh, recorded_at")
+          .eq("machine_id", machineId!)
+          .gte("recorded_at", fromIso)
+          .lte("recorded_at", toIso)
+          .order("recorded_at")
+          .limit(2000),
+      ),
+  });
+
+export type Geofence = {
+  id: string;
+  name: string;
+  hub_id: number;
+  machine_id: string | null;
+  polygon_json: { lat?: number; lng?: number; radius_m?: number; type?: string } | null;
+  alert_on_exit: boolean;
+  alert_on_entry: boolean;
+  is_active: boolean;
+  created_at: string;
+};
+
+export const geofencesQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["geofences", hubId ?? "all"],
+    staleTime: 60_000,
+    queryFn: () => {
+      let q = supabase.from("geofences").select("*").order("name");
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<Geofence[]>(q);
+    },
+  });
+
+export type Device = {
+  id: string;
+  serial: string;
+  kind: "tracker" | "monitor" | "tablet";
+  model: string;
+  hub_id: number | null;
+  machine_id: string | null;
+  sim_number: string | null;
+  status: "active" | "faulty" | "spare" | "retired";
+  installed_at: string | null;
+  warranty_end: string | null;
+  last_checkin: string | null;
+  notes: string | null;
+};
+
+export const devicesQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["devices", hubId ?? "all"],
+    staleTime: 60_000,
+    queryFn: () => {
+      let q = supabase.from("devices").select("*").order("serial");
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<Device[]>(q);
+    },
+  });
+
+export type AuditRow = {
+  id: string;
+  actor_email: string;
+  action: string;
+  entity: string;
+  entity_ref: string | null;
+  hub_id: number | null;
+  detail: string | null;
+  created_at: string;
+};
+
+export const auditQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["audit_log", hubId ?? "all"],
+    staleTime: 15_000,
+    queryFn: () => {
+      let q = supabase
+        .from("audit_log")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500);
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<AuditRow[]>(q);
+    },
+  });
+
+/** Recent GPS points for a set of machines, used for idling/speeding analytics. */
+export const fleetTracksQuery = (hubId: number | null, hours: number) =>
+  queryOptions({
+    queryKey: ["fleet-tracks", hubId ?? "all", hours],
+    staleTime: 60_000,
+    queryFn: async () => {
+      let mq = supabase.from("machines").select("id, unit_id, hub_id, type");
+      if (hubId) mq = mq.eq("hub_id", hubId);
+      const machines = await unwrap<{ id: string; unit_id: string; hub_id: number; type: string }[]>(
+        mq,
+      );
+      const points = await unwrap<
+        { machine_id: string; lat: number; lng: number; speed_kmh: number; recorded_at: string }[]
+      >(
+        supabase
+          .from("gps_tracks")
+          .select("machine_id, lat, lng, speed_kmh, recorded_at")
+          .gte("recorded_at", new Date(Date.now() - hours * 3600_000).toISOString())
+          .order("recorded_at")
+          .limit(20000),
+      );
+      const ids = new Set(machines.map((m) => m.id));
+      return { machines, points: points.filter((p) => ids.has(p.machine_id)) };
+    },
+  });
+
