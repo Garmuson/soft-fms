@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/geofences")({
 });
 
 function fenceCentre(g: Geofence) {
-  const p = g.polygon_json ?? {};
+  const p = (g.polygon_json ?? {}) as { lat?: number; lng?: number; radius_m?: number };
   return {
     lat: Number(p.lat ?? 6.3),
     lng: Number(p.lng ?? -9.4),
