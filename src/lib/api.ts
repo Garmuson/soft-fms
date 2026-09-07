@@ -168,7 +168,7 @@ export const fuelLogsQuery = (hubId?: number | null, machineId?: string | null) 
         .from("fuel_logs")
         .select("*")
         .order("logged_at", { ascending: false })
-        .limit(500);
+        .limit(2000);
       if (hubId) q = q.eq("hub_id", hubId);
       if (machineId) q = q.eq("machine_id", machineId);
       return unwrap<FuelLog[]>(q);
@@ -184,7 +184,7 @@ export const maintenanceQuery = (hubId?: number | null, machineId?: string | nul
         .from("maintenance_records")
         .select("*")
         .order("scheduled_at", { ascending: false })
-        .limit(500);
+        .limit(1000);
       if (hubId) q = q.eq("hub_id", hubId);
       if (machineId) q = q.eq("machine_id", machineId);
       return unwrap<Maintenance[]>(q);
