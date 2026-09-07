@@ -32,3 +32,13 @@
 - [ ] Realtime (machines, alerts), toasts, notification drawer
 - [ ] Skeletons, empty states, error + offline banners
 - [ ] URL filter state, keyboard/focus accessibility, head metadata
+
+## Progress (phase 2-5 complete)
+- HQ Admin: dashboard, hubs, hub detail, machine modal + deep link, fleet register, alerts, projects, fuel, reports, users, settings — done
+- Hub Supervisor: hub dashboard, my machines, work orders, fuel log, hub alerts, hub reports — done
+- Field Operator: machines, tasks, fuel entry, inspection, incident report — done
+- Ministry Analyst: read-only national overview, reports, hubs — done
+
+## Open items
+- Cloud security linter reports 7 SECURITY DEFINER helper functions callable by signed-in users (needed by RLS policies) — review before production sign-off.
+- Machine count: brief states 285 total but also 19 per hub across 19 hubs (= 361). Seed uses 19 per hub, matching the per-hub type breakdown. Confirm with client.

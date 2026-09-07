@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ChevronDown, ChevronRight, Truck } from "lucide-react";
@@ -94,8 +94,8 @@ function MyMachinesPage() {
                     .slice(0, 7)
                     .reverse();
                   return (
-                    <>
-                      <tr key={m.id} className="border-b border-border hover:bg-surface-2">
+                    <Fragment key={m.id}>
+                      <tr className="border-b border-border hover:bg-surface-2">
                         <td className="px-2 py-2">
                           <button
                             onClick={() => setOpen(isOpen ? null : m.id)}
@@ -131,7 +131,7 @@ function MyMachinesPage() {
                         <td className="num px-2 py-2 text-muted-foreground">{timeAgo(m.last_seen)}</td>
                       </tr>
                       {isOpen && (
-                        <tr key={`${m.id}-d`} className="border-b border-border bg-background/60">
+                        <tr className="border-b border-border bg-background/60">
                           <td colSpan={7} className="px-4 py-3">
                             <div className="grid gap-4 md:grid-cols-3">
                               <div>
@@ -193,7 +193,7 @@ function MyMachinesPage() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
