@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/hub/$id")({
         content: "Hub-level machine register, utilization, alerts and projects for an SPPCC hub.",
       },
       { property: "og:title", content: "Hub Detail · YM-FMS" },
-      { property: "og:description", content: "Live status of 19 machines assigned to this hub." },
+      { property: "og:description", content: "Live status of 15 machines assigned to this hub." },
     ],
   }),
   component: HubDetailRoute,

@@ -35,7 +35,7 @@ function SettingsPage() {
     ["Client", "Special Presidential Projects Coordinating Committee (SPPCC)"],
     ["Hubs configured", String(hubs.length)],
     ["Machines registered", String(machines.length)],
-    ["Machines per hub", "19"],
+    ["Machines per hub", "15"],
     ["GPS uptime window", "2 minutes"],
     ["Machine refresh interval", "30 seconds"],
     ["Alert refresh interval", "15 seconds"],

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/hub-dashboard")({
         content: "Supervisor dashboard for a single SPPCC hub — machines, alerts, projects and fuel.",
       },
       { property: "og:title", content: "Hub Dashboard · YM-FMS" },
-      { property: "og:description", content: "Live status for your assigned hub's 19 machines." },
+      { property: "og:description", content: "Live status for your assigned hub's 15 machines." },
     ],
   }),
   component: () => (
