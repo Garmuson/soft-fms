@@ -74,6 +74,12 @@ function AuthPage() {
       return;
     }
     toast.success("Signed in to YM-FMS");
+    if (res.data.user) {
+      void logAudit(
+        { id: res.data.user.id, email: res.data.user.email ?? email },
+        { action: "signed in", entity: "session", detail: "Email and password" },
+      );
+    }
     await goHome();
   }
 
