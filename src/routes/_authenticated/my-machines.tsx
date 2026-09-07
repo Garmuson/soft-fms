@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/my-machines")({
         content: "Machine register for your hub with inline status updates, fuel history and alerts.",
       },
       { property: "og:title", content: "My Machines · YM-FMS" },
-      { property: "og:description", content: "Manage the 19 machines assigned to your hub." },
+      { property: "og:description", content: "Manage the 15 machines assigned to your hub." },
     ],
   }),
   component: () => (
