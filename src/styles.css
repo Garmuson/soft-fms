@@ -172,6 +172,12 @@
   border-radius: 4px;
 }
 
+/* Keep all neutral text bright white across navigation, tables, forms and overlays. */
+.text-foreground,
+.text-muted-foreground {
+  color: #ffffff;
+}
+
 /* Leaflet dark tuning */
 .leaflet-container {
   background: #0d1117;
