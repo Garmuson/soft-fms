@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
+import { submitOrQueue } from "@/lib/offline-queue";
 
 export const Route = createFileRoute("/_authenticated/inspect")({
   head: () => ({

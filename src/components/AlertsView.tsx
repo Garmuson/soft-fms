@@ -16,6 +16,7 @@ import {
 import { MachineDetailModal } from "@/components/MachineDetailModal";
 import { fmtDateTime, timeAgo } from "@/lib/fleet";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
 
 const TABS = ["all", "critical", "warning", "info", "acknowledged"] as const;
 export type AlertTab = (typeof TABS)[number];
@@ -48,7 +49,7 @@ export function AlertsView({
   title?: string;
 }) {
   const qc = useQueryClient();
-  const { readOnly } = useAuth();
+  const { readOnly, profile } = useAuth();
   const [type, setType] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [unit, setUnit] = useState<string | null>(null);
