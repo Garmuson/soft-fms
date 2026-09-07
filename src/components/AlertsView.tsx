@@ -16,6 +16,7 @@ import {
 import { MachineDetailModal } from "@/components/MachineDetailModal";
 import { fmtDateTime, timeAgo } from "@/lib/fleet";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
 
 const TABS = ["all", "critical", "warning", "info", "acknowledged"] as const;
 export type AlertTab = (typeof TABS)[number];
@@ -48,7 +49,7 @@ export function AlertsView({
   title?: string;
 }) {
   const qc = useQueryClient();
-  const { readOnly } = useAuth();
+  const { readOnly, profile } = useAuth();
   const [type, setType] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [unit, setUnit] = useState<string | null>(null);
@@ -97,9 +98,18 @@ export function AlertsView({
     if (error) toast.error("Could not acknowledge this alert", { description: error.message });
     else {
       toast.success("Alert acknowledged");
+      const a = alerts.find((x) => x.id === id);
+      void logAudit(profile, {
+        action: "acknowledged alert",
+        entity: "alert",
+        entity_ref: a?.type ?? id,
+        hub_id: a?.hub_id ?? null,
+        detail: a?.message ?? null,
+      });
       qc.invalidateQueries({ queryKey: ["alerts"] });
     }
   }
+
 
   return (
     <>

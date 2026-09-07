@@ -5,12 +5,16 @@ import { toast } from "sonner";
 import {
   Bell,
   BarChart3,
+  BookOpen,
   ClipboardList,
   Cog,
+  Cpu,
   Fuel,
   Gauge,
+  History,
   LogOut,
   Map as MapIcon,
+  MapPin,
   Menu,
   ShieldCheck,
   Truck,
@@ -48,14 +52,19 @@ const NAV: Record<Role, NavSection[]> = {
         { to: "/alerts", label: "Alerts", icon: Bell },
         { to: "/projects", label: "Projects", icon: ClipboardList },
         { to: "/fuel", label: "Fuel Overview", icon: Fuel },
+        { to: "/geofences", label: "Geofences", icon: MapPin },
+        { to: "/idling", label: "Idling & Speeding", icon: Gauge },
       ],
     },
     {
       title: "Administration",
       items: [
         { to: "/reports", label: "Reports", icon: BarChart3 },
+        { to: "/devices", label: "Device Register", icon: Cpu },
         { to: "/users", label: "Users", icon: Users },
+        { to: "/activity", label: "Activity Log", icon: History },
         { to: "/settings", label: "Settings", icon: Cog },
+        { to: "/handbook", label: "Handbook", icon: BookOpen },
       ],
     },
   ],
@@ -73,7 +82,11 @@ const NAV: Record<Role, NavSection[]> = {
       items: [
         { to: "/fuel-log", label: "Fuel Log", icon: Fuel },
         { to: "/hub-alerts", label: "Alerts", icon: Bell },
+        { to: "/geofences", label: "Geofences", icon: MapPin },
+        { to: "/idling", label: "Idling & Speeding", icon: Gauge },
+        { to: "/devices", label: "Devices", icon: Cpu },
         { to: "/hub-reports", label: "Hub Reports", icon: FileText },
+        { to: "/handbook", label: "Handbook", icon: BookOpen },
       ],
     },
   ],
@@ -87,6 +100,10 @@ const NAV: Record<Role, NavSection[]> = {
         { to: "/fuel-entry", label: "Fuel Entry", icon: Fuel },
         { to: "/incident", label: "Incident", icon: AlertTriangle },
       ],
+    },
+    {
+      title: "Help",
+      items: [{ to: "/handbook", label: "Handbook", icon: BookOpen }],
     },
   ],
   ministry_analyst: [
@@ -104,10 +121,16 @@ const NAV: Record<Role, NavSection[]> = {
         { to: "/scorecards", label: "Hub Scorecards", icon: BarChart3 },
         { to: "/reports", label: "Reports", icon: FileText },
         { to: "/alerts", label: "Alerts", icon: Bell },
+        { to: "/idling", label: "Idling & Speeding", icon: Gauge },
+        { to: "/geofences", label: "Geofences", icon: MapPin },
+        { to: "/devices", label: "Device Register", icon: Cpu },
+        { to: "/activity", label: "Activity Log", icon: History },
+        { to: "/handbook", label: "Handbook", icon: BookOpen },
       ],
     },
   ],
 };
+
 
 function useOnline() {
   const [online, setOnline] = useState(true);

@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
+import { submitOrQueue } from "@/lib/offline-queue";
 
 export const Route = createFileRoute("/_authenticated/inspect")({
   head: () => ({
@@ -75,27 +77,45 @@ function InspectPage() {
     }
     setBusy(true);
     const machine = machines.find((m) => m.id === machineId);
-    const { error } = await supabase.from("inspections").insert({
-      machine_id: machineId,
-      hub_id: machine?.hub_id ?? hubId ?? 1,
-      operator_id: profile?.id ?? null,
-      type,
-      overall_status: overall,
-      checklist_json: ITEMS.map((i) => ({
-        item: i.label,
-        critical: i.critical,
-        result: state[i.key]!.result,
-        notes: state[i.key]!.notes,
-      })),
-      photo_urls: [],
-    });
+    const result = await submitOrQueue(
+      "inspections",
+      `${type} inspection for ${machine?.unit_id ?? "machine"}`,
+      {
+        machine_id: machineId,
+        hub_id: machine?.hub_id ?? hubId ?? 1,
+        operator_id: profile?.id ?? null,
+        type,
+        overall_status: overall,
+        checklist_json: ITEMS.map((i) => ({
+          item: i.label,
+          critical: i.critical,
+          result: state[i.key]!.result,
+          notes: state[i.key]!.notes,
+        })),
+        photo_urls: [],
+      },
+    );
     setBusy(false);
-    if (error) {
-      toast.error("Could not submit inspection", { description: error.message });
+    if (result.error) {
+      toast.error("Could not submit inspection", { description: result.error });
       return;
+    }
+    if (result.queued) {
+      toast.warning("Saved on this device", {
+        description: "No connection — the inspection will be sent when you are back online.",
+      });
+    } else {
+      void logAudit(profile, {
+        action: "submitted inspection",
+        entity: "inspection",
+        entity_ref: machine?.unit_id ?? null,
+        hub_id: machine?.hub_id ?? hubId ?? null,
+        detail: overall,
+      });
     }
     qc.invalidateQueries({ queryKey: ["inspections"] });
     setDone(machine?.unit_id ?? "");
+
   }
 
   if (done)

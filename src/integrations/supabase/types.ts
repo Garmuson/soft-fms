@@ -75,6 +75,133 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_email: string
+          actor_id: string | null
+          created_at: string
+          detail: string | null
+          entity: string
+          entity_ref: string | null
+          hub_id: number | null
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_email?: string
+          actor_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity: string
+          entity_ref?: string | null
+          hub_id?: number | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_email?: string
+          actor_id?: string | null
+          created_at?: string
+          detail?: string | null
+          entity?: string
+          entity_ref?: string | null
+          hub_id?: number | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_log_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devices: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          hub_id: number | null
+          id: string
+          installed_at: string | null
+          kind: Database["public"]["Enums"]["device_kind"]
+          last_checkin: string | null
+          machine_id: string | null
+          model: string
+          notes: string | null
+          serial: string
+          sim_number: string | null
+          status: Database["public"]["Enums"]["device_status"]
+          updated_at: string
+          warranty_end: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          hub_id?: number | null
+          id?: string
+          installed_at?: string | null
+          kind: Database["public"]["Enums"]["device_kind"]
+          last_checkin?: string | null
+          machine_id?: string | null
+          model?: string
+          notes?: string | null
+          serial: string
+          sim_number?: string | null
+          status?: Database["public"]["Enums"]["device_status"]
+          updated_at?: string
+          warranty_end?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          hub_id?: number | null
+          id?: string
+          installed_at?: string | null
+          kind?: Database["public"]["Enums"]["device_kind"]
+          last_checkin?: string | null
+          machine_id?: string | null
+          model?: string
+          notes?: string | null
+          serial?: string
+          sim_number?: string | null
+          status?: Database["public"]["Enums"]["device_status"]
+          updated_at?: string
+          warranty_end?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devices_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devices_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devices_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fuel_logs: {
         Row: {
           cost_usd: number
@@ -813,6 +940,8 @@ export type Database = {
         | "hub_supervisor"
         | "field_operator"
         | "ministry_analyst"
+      device_kind: "tracker" | "monitor" | "tablet"
+      device_status: "active" | "faulty" | "spare" | "retired"
       machine_status: "active" | "idle" | "maintenance" | "alert" | "offline"
       machine_type:
         | "motor_grader"
@@ -958,6 +1087,8 @@ export const Constants = {
         "field_operator",
         "ministry_analyst",
       ],
+      device_kind: ["tracker", "monitor", "tablet"],
+      device_status: ["active", "faulty", "spare", "retired"],
       machine_status: ["active", "idle", "maintenance", "alert", "offline"],
       machine_type: [
         "motor_grader",

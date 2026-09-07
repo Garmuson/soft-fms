@@ -8,6 +8,8 @@ import { EmptyState, PageHeader, Panel, SkeletonCards, StatusBadge, btn } from "
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
 import { typeLabel } from "@/lib/fleet";
+import { logAudit } from "@/lib/audit";
+import { PendingSync } from "@/components/PendingSync";
 
 export const Route = createFileRoute("/_authenticated/operator-dashboard")({
   head: () => ({
@@ -66,6 +68,13 @@ function OperatorHome() {
     if (error) toast.error("Could not start shift", { description: error.message });
     else {
       toast.success("Shift started");
+      const m = (machinesQ.data ?? []).find((x) => x.id === id);
+      void logAudit(profile, {
+        action: "started shift",
+        entity: "machine",
+        entity_ref: m?.unit_id ?? null,
+        hub_id: m?.hub_id ?? null,
+      });
       qc.invalidateQueries({ queryKey: ["my-machines"] });
     }
   }
@@ -75,6 +84,8 @@ function OperatorHome() {
   return (
     <>
       <PageHeader title="My Machines" subtitle="Machines assigned to you for this shift" />
+      <PendingSync />
+
       {machinesQ.isLoading ? (
         <SkeletonCards count={3} height={150} />
       ) : machines.length === 0 ? (

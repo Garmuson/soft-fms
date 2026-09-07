@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Pause, Play, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   alertsQuery,
   fuelLogsQuery,
-  gpsTrackQuery,
+  gpsRangeQuery,
   hubsQuery,
   maintenanceQuery,
   type Machine,
@@ -18,10 +18,13 @@ import {
   SkeletonTable,
   StatusBadge,
   btn,
+  inputCls,
 } from "@/components/kit";
 import { MapPanel } from "@/components/MapPanel";
 import { fmtDateTime, money, timeAgo, typeLabel } from "@/lib/fleet";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
+import { analyseTrack, readThresholds } from "@/lib/thresholds";
 import { toast } from "sonner";
 
 const TABS = ["Overview", "Location & History", "Fuel Log", "Maintenance", "Alerts"] as const;
@@ -34,8 +37,8 @@ export function MachineDetailModal({
   onClose: () => void;
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Overview");
-  const [hours, setHours] = useState(24);
-  const { readOnly, role } = useAuth();
+
+  const { readOnly, role, profile } = useAuth();
 
   const { data: machine, isLoading } = useQuery({
     queryKey: ["machine", unitId],
@@ -64,7 +67,6 @@ export function MachineDetailModal({
     ...alertsQuery(machine?.hub_id ?? null),
     enabled: !!machine?.hub_id,
   });
-  const { data: track = [] } = useQuery(gpsTrackQuery(machine?.id ?? null, hours));
 
   if (!unitId) return null;
   const hub = hubs.find((h) => h.id === machine?.hub_id);
@@ -77,9 +79,20 @@ export function MachineDetailModal({
       .from("machines")
       .update({ status: status as "active" })
       .eq("id", machine.id);
-    if (error) toast.error("Could not update this machine", { description: error.message });
-    else toast.success(`${machine.unit_id} marked ${status}`);
+    if (error) {
+      toast.error("Could not update this machine", { description: error.message });
+      return;
+    }
+    toast.success(`${machine.unit_id} marked ${status}`);
+    void logAudit(profile, {
+      action: "machine status changed",
+      entity: "machine",
+      entity_ref: machine.unit_id,
+      hub_id: machine.hub_id,
+      detail: `${machine.status} → ${status}`,
+    });
   }
+
 
   return (
     <div
@@ -172,29 +185,8 @@ export function MachineDetailModal({
               </Panel>
             </div>
           ) : tab === "Location & History" ? (
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                {[24, 168, 720].map((h) => (
-                  <button
-                    key={h}
-                    onClick={() => setHours(h)}
-                    className={hours === h ? btn.primary : btn.secondary}
-                  >
-                    {h === 24 ? "24h" : h === 168 ? "7d" : "30d"}
-                  </button>
-                ))}
-              </div>
-              <MapPanel
-                machines={[{ ...machine, hub_name: hub?.name ?? null }]}
-                center={[Number(machine.lat ?? 6.3), Number(machine.lng ?? -9.4)]}
-                zoom={11}
-                height={380}
-                track={{ points: track.map((p) => [Number(p.lat), Number(p.lng)]) }}
-              />
-              <p className="num text-[11px] text-muted-foreground">
-                {track.length} GPS points in the selected window
-              </p>
-            </div>
+            <HistoryTab machine={machine} hubName={hub?.name ?? null} />
+
           ) : tab === "Fuel Log" ? (
             fuel.length === 0 ? (
               <EmptyState
@@ -318,6 +310,169 @@ function Metric({ label, value }: { label: string; value: string }) {
     <div>
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="num mt-0.5 capitalize text-foreground">{value}</dd>
+    </div>
+  );
+}
+
+function toLocalInput(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(
+    d.getMinutes(),
+  )}`;
+}
+
+/**
+ * Location and movement history with replay: the operator's route is drawn up to
+ * the selected moment and a marker walks the path when playing.
+ */
+function HistoryTab({ machine, hubName }: { machine: Machine; hubName: string | null }) {
+  const [from, setFrom] = useState(() => toLocalInput(new Date(Date.now() - 24 * 3600_000)));
+  const [to, setTo] = useState(() => toLocalInput(new Date()));
+  const [idx, setIdx] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const thresholds = readThresholds();
+
+  const { data: track = [], isLoading } = useQuery(
+    gpsRangeQuery(machine.id, new Date(from).toISOString(), new Date(to).toISOString()),
+  );
+
+  const points = useMemo(
+    () => track.map((p) => [Number(p.lat), Number(p.lng)] as [number, number]),
+    [track],
+  );
+  const behaviour = useMemo(() => analyseTrack(track, thresholds), [track, thresholds]);
+
+  useEffect(() => {
+    setIdx(track.length ? track.length - 1 : 0);
+    setPlaying(false);
+  }, [track.length]);
+
+  useEffect(() => {
+    if (!playing || track.length < 2) return;
+    const timer = window.setInterval(() => {
+      setIdx((i) => {
+        if (i >= track.length - 1) {
+          setPlaying(false);
+          return i;
+        }
+        return i + 1;
+      });
+    }, 250);
+    return () => window.clearInterval(timer);
+  }, [playing, track.length]);
+
+  const current = track[Math.min(idx, track.length - 1)];
+  const setRange = (hours: number) => {
+    setFrom(toLocalInput(new Date(Date.now() - hours * 3600_000)));
+    setTo(toLocalInput(new Date()));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-end gap-2">
+        <label className="text-[10px] text-muted-foreground">
+          From
+          <input
+            type="datetime-local"
+            className={inputCls}
+            value={from}
+            onChange={(e) => setFrom(e.target.value)}
+          />
+        </label>
+        <label className="text-[10px] text-muted-foreground">
+          To
+          <input
+            type="datetime-local"
+            className={inputCls}
+            value={to}
+            onChange={(e) => setTo(e.target.value)}
+          />
+        </label>
+        <div className="flex gap-1.5">
+          {[
+            [24, "24h"],
+            [168, "7d"],
+            [720, "30d"],
+          ].map(([h, label]) => (
+            <button key={String(label)} className={btn.secondary} onClick={() => setRange(Number(h))}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <MapPanel
+        machines={[{ ...machine, hub_name: hubName }]}
+        center={[
+          Number(current?.lat ?? machine.lat ?? 6.3),
+          Number(current?.lng ?? machine.lng ?? -9.4),
+        ]}
+        zoom={11}
+        height={380}
+        track={{ points: points.slice(0, Math.max(2, idx + 1)) }}
+        {...(current
+          ? {
+              pin: {
+                lat: Number(current.lat),
+                lng: Number(current.lng),
+                label: `${fmtDateTime(current.recorded_at)} · ${Number(current.speed_kmh)} km/h`,
+              },
+            }
+          : {})}
+      />
+
+      {isLoading ? (
+        <p className="text-[11px] text-muted-foreground">Loading movement history…</p>
+      ) : track.length === 0 ? (
+        <EmptyState
+          title="No movement recorded"
+          message="No tracking points were received for this machine in the selected period."
+        />
+      ) : (
+        <>
+          <div className="flex items-center gap-3">
+            <button
+              className={btn.primary}
+              onClick={() => {
+                if (idx >= track.length - 1) setIdx(0);
+                setPlaying((p) => !p);
+              }}
+              aria-label={playing ? "Pause replay" : "Play replay"}
+            >
+              {playing ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
+              {playing ? "Pause" : "Replay"}
+            </button>
+            <input
+              type="range"
+              min={0}
+              max={Math.max(0, track.length - 1)}
+              value={Math.min(idx, track.length - 1)}
+              onChange={(e) => {
+                setPlaying(false);
+                setIdx(Number(e.target.value));
+              }}
+              className="flex-1 accent-[#d4a017]"
+              aria-label="Movement timeline"
+            />
+            <span className="num w-40 text-right text-[11px] text-muted-foreground">
+              {current ? fmtDateTime(current.recorded_at) : "—"}
+            </span>
+          </div>
+          <dl className="num grid grid-cols-2 gap-3 text-[11px] sm:grid-cols-5">
+            <Metric label="Points" value={String(track.length)} />
+            <Metric label="Top speed" value={`${behaviour.topSpeed} km/h`} />
+            <Metric label="Moving" value={`${behaviour.movingMinutes} min`} />
+            <Metric label="Idle" value={`${behaviour.idleMinutes} min`} />
+            <Metric label="Longest stop" value={`${behaviour.longestIdleMinutes} min`} />
+          </dl>
+          {behaviour.speedingPoints > 0 && (
+            <p className="text-[11px] text-red">
+              {behaviour.speedingPoints} readings above the {thresholds.speedLimitKmh} km/h limit in
+              this period.
+            </p>
+          )}
+        </>
+      )}
     </div>
   );
 }

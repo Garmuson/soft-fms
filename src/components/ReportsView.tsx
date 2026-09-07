@@ -23,6 +23,7 @@ const ALL_TYPES = [
   { value: "hub_scorecard", label: "Hub Scorecard", desc: "Ranked hub performance against the 80% target" },
   { value: "fuel_analysis", label: "Fuel Analysis", desc: "Consumption, cost and anomaly breakdown" },
   { value: "maintenance_compliance", label: "Maintenance Compliance", desc: "Preventive schedule adherence and overdue work" },
+  { value: "idle_speed", label: "Idling & Speeding", desc: "Prolonged idling and over-speed events per machine" },
   { value: "gps_uptime", label: "GPS Uptime", desc: "Telemetry availability per machine and hub" },
 ];
 

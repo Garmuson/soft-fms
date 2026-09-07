@@ -1,6 +1,6 @@
 import { ClientOnly } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
-import type { MapHub, MapMachine } from "./FleetMap";
+import type { MapFence, MapHub, MapMachine } from "./FleetMap";
 
 const FleetMap = lazy(() => import("./FleetMap"));
 
@@ -11,6 +11,9 @@ export function MapPanel(props: {
   zoom?: number;
   height?: number;
   track?: { points: [number, number][] };
+  fences?: MapFence[];
+  pin?: { lat: number; lng: number; label?: string } | undefined;
+  onMapClick?: (lat: number, lng: number) => void;
   onSelect?: (unitId: string) => void;
 }) {
   const fallback = (

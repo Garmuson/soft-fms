@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
+import { submitOrQueue } from "@/lib/offline-queue";
 
 export const Route = createFileRoute("/_authenticated/fuel-entry")({
   head: () => ({
@@ -61,7 +63,7 @@ function FuelEntryPage() {
     }
     setBusy(true);
     const machine = machines.find((m) => m.id === form.machine_id);
-    const { error } = await supabase.from("fuel_logs").insert({
+    const result = await submitOrQueue("fuel_logs", `Fuel entry for ${machine?.unit_id ?? "machine"}`, {
       machine_id: form.machine_id,
       hub_id: machine?.hub_id ?? hubId ?? 1,
       operator_id: profile?.id ?? null,
@@ -74,14 +76,28 @@ function FuelEntryPage() {
       notes: form.notes || null,
     });
     setBusy(false);
-    if (error) {
-      toast.error("Could not save the fuel entry", { description: error.message });
+    if (result.error) {
+      toast.error("Could not save the fuel entry", { description: result.error });
       return;
     }
-    await supabase.from("machines").update({ fuel_level: form.after }).eq("id", form.machine_id);
+    if (result.queued) {
+      toast.warning("Saved on this device", {
+        description: "No connection — it will be sent to HQ automatically when you are back online.",
+      });
+    } else {
+      await supabase.from("machines").update({ fuel_level: form.after }).eq("id", form.machine_id);
+      void logAudit(profile, {
+        action: "logged fuel",
+        entity: "fuel_log",
+        entity_ref: machine?.unit_id ?? null,
+        hub_id: machine?.hub_id ?? hubId ?? null,
+        detail: `${form.volume_litres} L`,
+      });
+    }
     qc.invalidateQueries({ queryKey: ["fuel_logs"] });
     qc.invalidateQueries({ queryKey: ["my-machines"] });
     setDone({ unit: machine?.unit_id ?? "", volume: Number(form.volume_litres) });
+
   }
 
   if (done)

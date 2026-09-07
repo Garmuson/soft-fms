@@ -5,6 +5,7 @@ import { PageHeader, Panel } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
 import { ROLE_LABEL } from "@/lib/fleet";
+import { readThresholds } from "@/lib/thresholds";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
@@ -29,6 +30,7 @@ function SettingsPage() {
   const { profile, role } = useAuth();
   const { data: hubs = [] } = useQuery(hubsQuery());
   const { data: machines = [] } = useQuery(machinesQuery(null));
+  const t = readThresholds();
 
   const rows: [string, string][] = [
     ["System", "YM-FMS — Yellow Machine Fleet Management System"],
@@ -39,6 +41,8 @@ function SettingsPage() {
     ["GPS uptime window", "2 minutes"],
     ["Machine refresh interval", "30 seconds"],
     ["Alert refresh interval", "15 seconds"],
+    ["Speed limit for alerts", `${t.speedLimitKmh} km/h (adjust on the Idling & Speeding page)`],
+    ["Prolonged idling limit", `${t.idleMinutes} minutes`],
     ["Utilization target", "80% (amber 70–80%, red below 70%)"],
     ["Preventive maintenance interval", "Every 250 engine hours"],
   ];
