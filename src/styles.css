@@ -190,3 +190,8 @@
   color: #7d8590 !important;
   border-color: #21262d !important;
 }
+
+/* Dark basemap: keyless OSM tiles filtered to match the YM-FMS dark theme */
+.map-dark-tiles {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
+}

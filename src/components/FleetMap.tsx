@@ -45,7 +45,8 @@ export default function FleetMap({
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          className="map-dark-tiles"
         />
         {hubs.map((h) => (
           <Rectangle
