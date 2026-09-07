@@ -79,8 +79,8 @@
   --surface-2: #1c2330;
   --border: #21262d;
   --border-hover: #30363d;
-  --foreground: #e6edf3;
-  --muted-fg: #7d8590;
+  --foreground: #ffffff;
+  --muted-fg: #ffffff;
   --green: #2ea043;
   --green-hover: #238636;
   --green-dim: #1a3a21;
@@ -180,14 +180,14 @@
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
   background: #1c2330;
-  color: #e6edf3;
+  color: #ffffff;
   border: 1px solid #30363d;
   border-radius: 8px;
 }
 .leaflet-bar a,
 .leaflet-control-attribution {
   background: #161b22 !important;
-  color: #7d8590 !important;
+  color: #ffffff !important;
   border-color: #21262d !important;
 }
 
