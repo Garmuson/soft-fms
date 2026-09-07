@@ -88,7 +88,7 @@ function IdlingPage() {
       <PageHeader
         title="Idling & Speeding"
         subtitle="Machine behaviour measured against SPPCC operating limits"
-        action={
+        actions={
           <button
             className={btn.secondary}
             onClick={() =>

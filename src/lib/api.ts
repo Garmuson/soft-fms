@@ -308,7 +308,7 @@ export type Geofence = {
   name: string;
   hub_id: number;
   machine_id: string | null;
-  polygon_json: { lat?: number; lng?: number; radius_m?: number; type?: string } | null;
+  polygon_json: unknown;
   alert_on_exit: boolean;
   alert_on_entry: boolean;
   is_active: boolean;
@@ -322,7 +322,7 @@ export const geofencesQuery = (hubId?: number | null) =>
     queryFn: () => {
       let q = supabase.from("geofences").select("*").order("name");
       if (hubId) q = q.eq("hub_id", hubId);
-      return unwrap<Geofence[]>(q);
+      return unwrap<Geofence[]>(q as never);
     },
   });
 

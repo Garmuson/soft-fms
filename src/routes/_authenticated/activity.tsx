@@ -39,7 +39,7 @@ function ActivityPage() {
       <PageHeader
         title="Activity Log"
         subtitle="Every recorded action, kept for accountability and audit"
-        action={
+        actions={
           <button
             className={btn.secondary}
             onClick={() =>

@@ -64,7 +64,7 @@ function ScorecardsPage() {
       <PageHeader
         title="Hub Scorecards"
         subtitle="All 19 hubs ranked on utilization, availability, project delivery and open alerts"
-        action={
+        actions={
           <button
             className={btn.secondary}
             onClick={() =>
