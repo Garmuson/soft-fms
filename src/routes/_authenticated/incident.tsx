@@ -74,7 +74,7 @@ function IncidentPage() {
     setBusy(true);
     const machine = machines.find((m) => m.id === machineId);
     const t = TYPES.find((x) => x.value === type)!;
-    const { error } = await supabase.from("alerts").insert({
+    const result = await submitOrQueue("alerts", `${t.label} on ${machine?.unit_id ?? "machine"}`, {
       machine_id: machineId,
       hub_id: machine?.hub_id ?? hubId ?? 1,
       level: severity as "warning",
@@ -84,12 +84,26 @@ function IncidentPage() {
       }`,
     });
     setBusy(false);
-    if (error) {
-      toast.error("Could not submit the report", { description: error.message });
+    if (result.error) {
+      toast.error("Could not submit the report", { description: result.error });
       return;
+    }
+    if (result.queued) {
+      toast.warning("Saved on this device", {
+        description: "No connection — the report will be sent when you are back online.",
+      });
+    } else {
+      void logAudit(profile, {
+        action: "reported incident",
+        entity: "alert",
+        entity_ref: machine?.unit_id ?? null,
+        hub_id: machine?.hub_id ?? hubId ?? null,
+        detail: t.label,
+      });
     }
     qc.invalidateQueries({ queryKey: ["alerts"] });
     setDone(true);
+
   }
 
   if (done)

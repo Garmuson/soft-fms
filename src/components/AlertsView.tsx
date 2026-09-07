@@ -97,9 +97,18 @@ export function AlertsView({
     if (error) toast.error("Could not acknowledge this alert", { description: error.message });
     else {
       toast.success("Alert acknowledged");
+      const a = alerts.find((x) => x.id === id);
+      void logAudit(profile, {
+        action: "acknowledged alert",
+        entity: "alert",
+        entity_ref: a?.type ?? id,
+        hub_id: a?.hub_id ?? null,
+        detail: a?.message ?? null,
+      });
       qc.invalidateQueries({ queryKey: ["alerts"] });
     }
   }
+
 
   return (
     <>
