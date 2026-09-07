@@ -172,29 +172,8 @@ export function MachineDetailModal({
               </Panel>
             </div>
           ) : tab === "Location & History" ? (
-            <div className="space-y-3">
-              <div className="flex gap-2">
-                {[24, 168, 720].map((h) => (
-                  <button
-                    key={h}
-                    onClick={() => setHours(h)}
-                    className={hours === h ? btn.primary : btn.secondary}
-                  >
-                    {h === 24 ? "24h" : h === 168 ? "7d" : "30d"}
-                  </button>
-                ))}
-              </div>
-              <MapPanel
-                machines={[{ ...machine, hub_name: hub?.name ?? null }]}
-                center={[Number(machine.lat ?? 6.3), Number(machine.lng ?? -9.4)]}
-                zoom={11}
-                height={380}
-                track={{ points: track.map((p) => [Number(p.lat), Number(p.lng)]) }}
-              />
-              <p className="num text-[11px] text-muted-foreground">
-                {track.length} GPS points in the selected window
-              </p>
-            </div>
+            <HistoryTab machine={machine} hubName={hub?.name ?? null} />
+
           ) : tab === "Fuel Log" ? (
             fuel.length === 0 ? (
               <EmptyState
