@@ -15,10 +15,14 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
+import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
 import { Route as AuthenticatedHubAlertsRouteImport } from './routes/_authenticated/hub-alerts'
 import { Route as AuthenticatedHubDashboardRouteImport } from './routes/_authenticated/hub-dashboard'
 import { Route as AuthenticatedHubsRouteImport } from './routes/_authenticated/hubs'
+import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedHubIdRouteImport } from './routes/_authenticated/hub.$id'
+import { Route as AuthenticatedMachineUnitIdRouteImport } from './routes/_authenticated/machine.$unitId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -49,6 +53,16 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFuelRoute = AuthenticatedFuelRouteImport.update({
+  id: '/fuel',
+  path: '/fuel',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubAlertsRoute = AuthenticatedHubAlertsRouteImport.update({
   id: '/hub-alerts',
   path: '/hub-alerts',
@@ -65,11 +79,22 @@ const AuthenticatedHubsRoute = AuthenticatedHubsRouteImport.update({
   path: '/hubs',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubIdRoute = AuthenticatedHubIdRouteImport.update({
   id: '/hub/$id',
   path: '/hub/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMachineUnitIdRoute =
+  AuthenticatedMachineUnitIdRouteImport.update({
+    id: '/machine/$unitId',
+    path: '/machine/$unitId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,10 +102,14 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/fleet': typeof AuthenticatedFleetRoute
+  '/fuel': typeof AuthenticatedFuelRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
+  '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -88,10 +117,14 @@ export interface FileRoutesByTo {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/fleet': typeof AuthenticatedFleetRoute
+  '/fuel': typeof AuthenticatedFuelRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/projects': typeof AuthenticatedProjectsRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
+  '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,10 +134,14 @@ export interface FileRoutesById {
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/fleet': typeof AuthenticatedFleetRoute
+  '/_authenticated/fuel': typeof AuthenticatedFuelRoute
   '/_authenticated/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/_authenticated/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/_authenticated/hubs': typeof AuthenticatedHubsRoute
+  '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/hub/$id': typeof AuthenticatedHubIdRoute
+  '/_authenticated/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -114,10 +151,14 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/fleet'
+    | '/fuel'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hubs'
+    | '/projects'
     | '/hub/$id'
+    | '/machine/$unitId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -125,10 +166,14 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/fleet'
+    | '/fuel'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hubs'
+    | '/projects'
     | '/hub/$id'
+    | '/machine/$unitId'
   id:
     | '__root__'
     | '/'
@@ -137,10 +182,14 @@ export interface FileRouteTypes {
     | '/_authenticated/alerts'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
+    | '/_authenticated/fleet'
+    | '/_authenticated/fuel'
     | '/_authenticated/hub-alerts'
     | '/_authenticated/hub-dashboard'
     | '/_authenticated/hubs'
+    | '/_authenticated/projects'
     | '/_authenticated/hub/$id'
+    | '/_authenticated/machine/$unitId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -193,6 +242,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fleet': {
+      id: '/_authenticated/fleet'
+      path: '/fleet'
+      fullPath: '/fleet'
+      preLoaderRoute: typeof AuthenticatedFleetRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fuel': {
+      id: '/_authenticated/fuel'
+      path: '/fuel'
+      fullPath: '/fuel'
+      preLoaderRoute: typeof AuthenticatedFuelRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hub-alerts': {
       id: '/_authenticated/hub-alerts'
       path: '/hub-alerts'
@@ -214,11 +277,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHubsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/projects': {
+      id: '/_authenticated/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hub/$id': {
       id: '/_authenticated/hub/$id'
       path: '/hub/$id'
       fullPath: '/hub/$id'
       preLoaderRoute: typeof AuthenticatedHubIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/machine/$unitId': {
+      id: '/_authenticated/machine/$unitId'
+      path: '/machine/$unitId'
+      fullPath: '/machine/$unitId'
+      preLoaderRoute: typeof AuthenticatedMachineUnitIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -228,20 +305,28 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFleetRoute: typeof AuthenticatedFleetRoute
+  AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
   AuthenticatedHubAlertsRoute: typeof AuthenticatedHubAlertsRoute
   AuthenticatedHubDashboardRoute: typeof AuthenticatedHubDashboardRoute
   AuthenticatedHubsRoute: typeof AuthenticatedHubsRoute
+  AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedHubIdRoute: typeof AuthenticatedHubIdRoute
+  AuthenticatedMachineUnitIdRoute: typeof AuthenticatedMachineUnitIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFleetRoute: AuthenticatedFleetRoute,
+  AuthenticatedFuelRoute: AuthenticatedFuelRoute,
   AuthenticatedHubAlertsRoute: AuthenticatedHubAlertsRoute,
   AuthenticatedHubDashboardRoute: AuthenticatedHubDashboardRoute,
   AuthenticatedHubsRoute: AuthenticatedHubsRoute,
+  AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedHubIdRoute: AuthenticatedHubIdRoute,
+  AuthenticatedMachineUnitIdRoute: AuthenticatedMachineUnitIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
