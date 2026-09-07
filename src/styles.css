@@ -175,7 +175,7 @@
 /* Keep all neutral text bright white across navigation, tables, forms and overlays. */
 .text-foreground,
 .text-muted-foreground {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 /* Leaflet dark tuning */
