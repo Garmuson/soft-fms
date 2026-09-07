@@ -19,8 +19,12 @@ import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
 import { Route as AuthenticatedHubAlertsRouteImport } from './routes/_authenticated/hub-alerts'
 import { Route as AuthenticatedHubDashboardRouteImport } from './routes/_authenticated/hub-dashboard'
+import { Route as AuthenticatedHubReportsRouteImport } from './routes/_authenticated/hub-reports'
 import { Route as AuthenticatedHubsRouteImport } from './routes/_authenticated/hubs'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedHubIdRouteImport } from './routes/_authenticated/hub.$id'
 import { Route as AuthenticatedMachineUnitIdRouteImport } from './routes/_authenticated/machine.$unitId'
 
@@ -74,6 +78,11 @@ const AuthenticatedHubDashboardRoute =
     path: '/hub-dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedHubReportsRoute = AuthenticatedHubReportsRouteImport.update({
+  id: '/hub-reports',
+  path: '/hub-reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubsRoute = AuthenticatedHubsRouteImport.update({
   id: '/hubs',
   path: '/hubs',
@@ -82,6 +91,21 @@ const AuthenticatedHubsRoute = AuthenticatedHubsRouteImport.update({
 const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHubIdRoute = AuthenticatedHubIdRouteImport.update({
@@ -106,8 +130,12 @@ export interface FileRoutesByFullPath {
   '/fuel': typeof AuthenticatedFuelRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
+  '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
   '/projects': typeof AuthenticatedProjectsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/users': typeof AuthenticatedUsersRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
   '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -121,8 +149,12 @@ export interface FileRoutesByTo {
   '/fuel': typeof AuthenticatedFuelRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
+  '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
   '/projects': typeof AuthenticatedProjectsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/users': typeof AuthenticatedUsersRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
   '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -138,8 +170,12 @@ export interface FileRoutesById {
   '/_authenticated/fuel': typeof AuthenticatedFuelRoute
   '/_authenticated/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/_authenticated/hub-dashboard': typeof AuthenticatedHubDashboardRoute
+  '/_authenticated/hub-reports': typeof AuthenticatedHubReportsRoute
   '/_authenticated/hubs': typeof AuthenticatedHubsRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/hub/$id': typeof AuthenticatedHubIdRoute
   '/_authenticated/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -155,8 +191,12 @@ export interface FileRouteTypes {
     | '/fuel'
     | '/hub-alerts'
     | '/hub-dashboard'
+    | '/hub-reports'
     | '/hubs'
     | '/projects'
+    | '/reports'
+    | '/settings'
+    | '/users'
     | '/hub/$id'
     | '/machine/$unitId'
   fileRoutesByTo: FileRoutesByTo
@@ -170,8 +210,12 @@ export interface FileRouteTypes {
     | '/fuel'
     | '/hub-alerts'
     | '/hub-dashboard'
+    | '/hub-reports'
     | '/hubs'
     | '/projects'
+    | '/reports'
+    | '/settings'
+    | '/users'
     | '/hub/$id'
     | '/machine/$unitId'
   id:
@@ -186,8 +230,12 @@ export interface FileRouteTypes {
     | '/_authenticated/fuel'
     | '/_authenticated/hub-alerts'
     | '/_authenticated/hub-dashboard'
+    | '/_authenticated/hub-reports'
     | '/_authenticated/hubs'
     | '/_authenticated/projects'
+    | '/_authenticated/reports'
+    | '/_authenticated/settings'
+    | '/_authenticated/users'
     | '/_authenticated/hub/$id'
     | '/_authenticated/machine/$unitId'
   fileRoutesById: FileRoutesById
@@ -270,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHubDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/hub-reports': {
+      id: '/_authenticated/hub-reports'
+      path: '/hub-reports'
+      fullPath: '/hub-reports'
+      preLoaderRoute: typeof AuthenticatedHubReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hubs': {
       id: '/_authenticated/hubs'
       path: '/hubs'
@@ -282,6 +337,27 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof AuthenticatedProjectsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users': {
+      id: '/_authenticated/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthenticatedUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/hub/$id': {
@@ -309,8 +385,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
   AuthenticatedHubAlertsRoute: typeof AuthenticatedHubAlertsRoute
   AuthenticatedHubDashboardRoute: typeof AuthenticatedHubDashboardRoute
+  AuthenticatedHubReportsRoute: typeof AuthenticatedHubReportsRoute
   AuthenticatedHubsRoute: typeof AuthenticatedHubsRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedHubIdRoute: typeof AuthenticatedHubIdRoute
   AuthenticatedMachineUnitIdRoute: typeof AuthenticatedMachineUnitIdRoute
 }
@@ -323,8 +403,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFuelRoute: AuthenticatedFuelRoute,
   AuthenticatedHubAlertsRoute: AuthenticatedHubAlertsRoute,
   AuthenticatedHubDashboardRoute: AuthenticatedHubDashboardRoute,
+  AuthenticatedHubReportsRoute: AuthenticatedHubReportsRoute,
   AuthenticatedHubsRoute: AuthenticatedHubsRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedHubIdRoute: AuthenticatedHubIdRoute,
   AuthenticatedMachineUnitIdRoute: AuthenticatedMachineUnitIdRoute,
 }
