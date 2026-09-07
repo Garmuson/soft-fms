@@ -42,3 +42,13 @@
 ## Open items
 - Cloud security linter reports 7 SECURITY DEFINER helper functions callable by signed-in users (needed by RLS policies) — review before production sign-off.
 - Machine count: brief states 285 total but also 19 per hub across 19 hubs (= 361). Seed uses 19 per hub, matching the per-hub type breakdown. Confirm with client.
+
+## 7. Bid gap closure (done)
+- [x] Geofence/work-zone management (/geofences) with map placement, radius, entry/exit alerts
+- [x] Historical movement replay in machine detail (date range, play/pause timeline)
+- [x] Idling & speeding monitoring with configurable thresholds (/idling) + report type
+- [x] Device register: 300 trackers, 5 HQ monitors, 50 tablets (/devices)
+- [x] Durable activity/audit log incl. sign-ins, acknowledgements, status changes (/activity)
+- [x] Operator offline queue with retry/sync panel on operator home
+- [x] User handbook, training plan, support/warranty page (/handbook)
+- [x] Ministry hub scorecards (/scorecards)

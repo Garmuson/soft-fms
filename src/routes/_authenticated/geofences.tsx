@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/geofences")({
 });
 
 function fenceCentre(g: Geofence) {
-  const p = g.polygon_json ?? {};
+  const p = (g.polygon_json ?? {}) as { lat?: number; lng?: number; radius_m?: number };
   return {
     lat: Number(p.lat ?? 6.3),
     lng: Number(p.lng ?? -9.4),
@@ -149,7 +149,7 @@ function GeofencesPage() {
     qc.invalidateQueries({ queryKey: ["geofences"] });
   }
 
-  async function updateAlerts(f: Geofence, patch: Partial<Geofence>) {
+  async function updateAlerts(f: Geofence, patch: { alert_on_exit?: boolean; alert_on_entry?: boolean }) {
     const { error } = await supabase.from("geofences").update(patch).eq("id", f.id);
     if (error) toast.error("Could not update alerting", { description: error.message });
     else qc.invalidateQueries({ queryKey: ["geofences"] });

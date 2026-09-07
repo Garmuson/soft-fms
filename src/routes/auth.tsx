@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { logAudit } from "@/lib/audit";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureDemoUsers } from "@/lib/demo.functions";
 import { btn, inputCls } from "@/components/kit";

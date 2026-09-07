@@ -132,7 +132,7 @@ function DevicesPage() {
       <PageHeader
         title="Device Register"
         subtitle="Trackers, command-room monitors and field tablets"
-        action={
+        actions={
           <button className={btn.secondary} onClick={exportCsv}>
             <Download className="size-3.5" aria-hidden /> Export CSV
           </button>
