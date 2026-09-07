@@ -38,7 +38,7 @@ export function MachineDetailModal({
 }) {
   const [tab, setTab] = useState<(typeof TABS)[number]>("Overview");
 
-  const { readOnly, role } = useAuth();
+  const { readOnly, role, profile } = useAuth();
 
   const { data: machine, isLoading } = useQuery({
     queryKey: ["machine", unitId],
@@ -79,9 +79,20 @@ export function MachineDetailModal({
       .from("machines")
       .update({ status: status as "active" })
       .eq("id", machine.id);
-    if (error) toast.error("Could not update this machine", { description: error.message });
-    else toast.success(`${machine.unit_id} marked ${status}`);
+    if (error) {
+      toast.error("Could not update this machine", { description: error.message });
+      return;
+    }
+    toast.success(`${machine.unit_id} marked ${status}`);
+    void logAudit(profile, {
+      action: "machine status changed",
+      entity: "machine",
+      entity_ref: machine.unit_id,
+      hub_id: machine.hub_id,
+      detail: `${machine.status} → ${status}`,
+    });
   }
+
 
   return (
     <div
