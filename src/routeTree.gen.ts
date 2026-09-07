@@ -17,14 +17,17 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
+import { Route as AuthenticatedFuelLogRouteImport } from './routes/_authenticated/fuel-log'
 import { Route as AuthenticatedHubAlertsRouteImport } from './routes/_authenticated/hub-alerts'
 import { Route as AuthenticatedHubDashboardRouteImport } from './routes/_authenticated/hub-dashboard'
 import { Route as AuthenticatedHubReportsRouteImport } from './routes/_authenticated/hub-reports'
 import { Route as AuthenticatedHubsRouteImport } from './routes/_authenticated/hubs'
+import { Route as AuthenticatedMyMachinesRouteImport } from './routes/_authenticated/my-machines'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedHubIdRouteImport } from './routes/_authenticated/hub.$id'
 import { Route as AuthenticatedMachineUnitIdRouteImport } from './routes/_authenticated/machine.$unitId'
 
@@ -67,6 +70,11 @@ const AuthenticatedFuelRoute = AuthenticatedFuelRouteImport.update({
   path: '/fuel',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFuelLogRoute = AuthenticatedFuelLogRouteImport.update({
+  id: '/fuel-log',
+  path: '/fuel-log',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubAlertsRoute = AuthenticatedHubAlertsRouteImport.update({
   id: '/hub-alerts',
   path: '/hub-alerts',
@@ -86,6 +94,11 @@ const AuthenticatedHubReportsRoute = AuthenticatedHubReportsRouteImport.update({
 const AuthenticatedHubsRoute = AuthenticatedHubsRouteImport.update({
   id: '/hubs',
   path: '/hubs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMyMachinesRoute = AuthenticatedMyMachinesRouteImport.update({
+  id: '/my-machines',
+  path: '/my-machines',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProjectsRoute = AuthenticatedProjectsRouteImport.update({
@@ -108,6 +121,11 @@ const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
+  id: '/work-orders',
+  path: '/work-orders',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedHubIdRoute = AuthenticatedHubIdRouteImport.update({
   id: '/hub/$id',
   path: '/hub/$id',
@@ -128,14 +146,17 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
+  '/fuel-log': typeof AuthenticatedFuelLogRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/my-machines': typeof AuthenticatedMyMachinesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
   '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -147,14 +168,17 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
+  '/fuel-log': typeof AuthenticatedFuelLogRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
   '/hubs': typeof AuthenticatedHubsRoute
+  '/my-machines': typeof AuthenticatedMyMachinesRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/hub/$id': typeof AuthenticatedHubIdRoute
   '/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -168,14 +192,17 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/fleet': typeof AuthenticatedFleetRoute
   '/_authenticated/fuel': typeof AuthenticatedFuelRoute
+  '/_authenticated/fuel-log': typeof AuthenticatedFuelLogRoute
   '/_authenticated/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/_authenticated/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/_authenticated/hub-reports': typeof AuthenticatedHubReportsRoute
   '/_authenticated/hubs': typeof AuthenticatedHubsRoute
+  '/_authenticated/my-machines': typeof AuthenticatedMyMachinesRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
+  '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/_authenticated/hub/$id': typeof AuthenticatedHubIdRoute
   '/_authenticated/machine/$unitId': typeof AuthenticatedMachineUnitIdRoute
 }
@@ -189,14 +216,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/fleet'
     | '/fuel'
+    | '/fuel-log'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
     | '/hubs'
+    | '/my-machines'
     | '/projects'
     | '/reports'
     | '/settings'
     | '/users'
+    | '/work-orders'
     | '/hub/$id'
     | '/machine/$unitId'
   fileRoutesByTo: FileRoutesByTo
@@ -208,14 +238,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/fleet'
     | '/fuel'
+    | '/fuel-log'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
     | '/hubs'
+    | '/my-machines'
     | '/projects'
     | '/reports'
     | '/settings'
     | '/users'
+    | '/work-orders'
     | '/hub/$id'
     | '/machine/$unitId'
   id:
@@ -228,14 +261,17 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/fleet'
     | '/_authenticated/fuel'
+    | '/_authenticated/fuel-log'
     | '/_authenticated/hub-alerts'
     | '/_authenticated/hub-dashboard'
     | '/_authenticated/hub-reports'
     | '/_authenticated/hubs'
+    | '/_authenticated/my-machines'
     | '/_authenticated/projects'
     | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/users'
+    | '/_authenticated/work-orders'
     | '/_authenticated/hub/$id'
     | '/_authenticated/machine/$unitId'
   fileRoutesById: FileRoutesById
@@ -304,6 +340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFuelRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/fuel-log': {
+      id: '/_authenticated/fuel-log'
+      path: '/fuel-log'
+      fullPath: '/fuel-log'
+      preLoaderRoute: typeof AuthenticatedFuelLogRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hub-alerts': {
       id: '/_authenticated/hub-alerts'
       path: '/hub-alerts'
@@ -330,6 +373,13 @@ declare module '@tanstack/react-router' {
       path: '/hubs'
       fullPath: '/hubs'
       preLoaderRoute: typeof AuthenticatedHubsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/my-machines': {
+      id: '/_authenticated/my-machines'
+      path: '/my-machines'
+      fullPath: '/my-machines'
+      preLoaderRoute: typeof AuthenticatedMyMachinesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/projects': {
@@ -360,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/work-orders': {
+      id: '/_authenticated/work-orders'
+      path: '/work-orders'
+      fullPath: '/work-orders'
+      preLoaderRoute: typeof AuthenticatedWorkOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/hub/$id': {
       id: '/_authenticated/hub/$id'
       path: '/hub/$id'
@@ -383,14 +440,17 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFleetRoute: typeof AuthenticatedFleetRoute
   AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
+  AuthenticatedFuelLogRoute: typeof AuthenticatedFuelLogRoute
   AuthenticatedHubAlertsRoute: typeof AuthenticatedHubAlertsRoute
   AuthenticatedHubDashboardRoute: typeof AuthenticatedHubDashboardRoute
   AuthenticatedHubReportsRoute: typeof AuthenticatedHubReportsRoute
   AuthenticatedHubsRoute: typeof AuthenticatedHubsRoute
+  AuthenticatedMyMachinesRoute: typeof AuthenticatedMyMachinesRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
+  AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
   AuthenticatedHubIdRoute: typeof AuthenticatedHubIdRoute
   AuthenticatedMachineUnitIdRoute: typeof AuthenticatedMachineUnitIdRoute
 }
@@ -401,14 +461,17 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFleetRoute: AuthenticatedFleetRoute,
   AuthenticatedFuelRoute: AuthenticatedFuelRoute,
+  AuthenticatedFuelLogRoute: AuthenticatedFuelLogRoute,
   AuthenticatedHubAlertsRoute: AuthenticatedHubAlertsRoute,
   AuthenticatedHubDashboardRoute: AuthenticatedHubDashboardRoute,
   AuthenticatedHubReportsRoute: AuthenticatedHubReportsRoute,
   AuthenticatedHubsRoute: AuthenticatedHubsRoute,
+  AuthenticatedMyMachinesRoute: AuthenticatedMyMachinesRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
+  AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
   AuthenticatedHubIdRoute: AuthenticatedHubIdRoute,
   AuthenticatedMachineUnitIdRoute: AuthenticatedMachineUnitIdRoute,
 }
