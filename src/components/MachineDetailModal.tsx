@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Pause, Play, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   alertsQuery,
   fuelLogsQuery,
-  gpsTrackQuery,
+  gpsRangeQuery,
   hubsQuery,
   maintenanceQuery,
   type Machine,
@@ -18,10 +18,13 @@ import {
   SkeletonTable,
   StatusBadge,
   btn,
+  inputCls,
 } from "@/components/kit";
 import { MapPanel } from "@/components/MapPanel";
 import { fmtDateTime, money, timeAgo, typeLabel } from "@/lib/fleet";
 import { useAuth } from "@/hooks/use-auth";
+import { logAudit } from "@/lib/audit";
+import { analyseTrack, readThresholds } from "@/lib/thresholds";
 import { toast } from "sonner";
 
 const TABS = ["Overview", "Location & History", "Fuel Log", "Maintenance", "Alerts"] as const;
