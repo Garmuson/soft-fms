@@ -64,7 +64,6 @@ export function MachineDetailModal({
     ...alertsQuery(machine?.hub_id ?? null),
     enabled: !!machine?.hub_id,
   });
-  });
 
   if (!unitId) return null;
   const hub = hubs.find((h) => h.id === machine?.hub_id);
