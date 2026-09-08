@@ -1,4 +1,10 @@
-export type Role = "hq_admin" | "hub_supervisor" | "field_operator" | "ministry_analyst";
+export type Role =
+  | "hq_admin"
+  | "hub_supervisor"
+  | "field_operator"
+  | "ministry_analyst"
+  | "data_entry_supervisor"
+  | "data_entry_staff";
 
 export type MachineStatus = "active" | "idle" | "maintenance" | "alert" | "offline";
 export type MachineType =
@@ -14,6 +20,8 @@ export const ROLE_LABEL: Record<Role, string> = {
   hub_supervisor: "Hub Supervisor",
   field_operator: "Field Operator",
   ministry_analyst: "Ministry Analyst",
+  data_entry_supervisor: "Data Entry Supervisor",
+  data_entry_staff: "Data Entry Staff",
 };
 
 export const ROLE_HOME: Record<Role, string> = {
@@ -21,7 +29,27 @@ export const ROLE_HOME: Record<Role, string> = {
   hub_supervisor: "/hub-dashboard",
   field_operator: "/operator-dashboard",
   ministry_analyst: "/analytics",
+  data_entry_supervisor: "/review-queue",
+  data_entry_staff: "/data-entry",
 };
+
+/** Roles that review and approve what data entry staff submit. */
+export const REVIEWER_ROLES: Role[] = ["hq_admin", "data_entry_supervisor"];
+
+export const ENTRY_STATUS_LABEL: Record<string, string> = {
+  pending: "Pending review",
+  approved: "Approved",
+  rejected: "Rejected",
+};
+
+export function entryStatusClasses(s: string): string {
+  if (s === "pending") return "bg-amber-dim text-amber";
+  if (s === "rejected") return "bg-red-dim text-red";
+  return "bg-green-dim text-teal";
+}
+
+export const EMPLOYMENT_TYPES = ["permanent", "contract", "seconded", "casual"] as const;
+export const SHIFTS = ["day", "night", "split"] as const;
 
 export const MACHINE_TYPES: { value: MachineType; label: string; code: string }[] = [
   { value: "motor_grader", label: "Motor Grader", code: "MG" },
