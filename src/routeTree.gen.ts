@@ -17,6 +17,7 @@ import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDevicesRouteImport } from './routes/_authenticated/devices'
+import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
 import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
 import { Route as AuthenticatedFuelEntryRouteImport } from './routes/_authenticated/fuel-entry'
@@ -79,6 +80,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedDevicesRoute = AuthenticatedDevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDriversRoute = AuthenticatedDriversRouteImport.update({
+  id: '/drivers',
+  path: '/drivers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/devices': typeof AuthenticatedDevicesRoute
+  '/drivers': typeof AuthenticatedDriversRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/devices': typeof AuthenticatedDevicesRoute
+  '/drivers': typeof AuthenticatedDriversRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/devices': typeof AuthenticatedDevicesRoute
+  '/_authenticated/drivers': typeof AuthenticatedDriversRoute
   '/_authenticated/fleet': typeof AuthenticatedFleetRoute
   '/_authenticated/fuel': typeof AuthenticatedFuelRoute
   '/_authenticated/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -316,6 +325,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/devices'
+    | '/drivers'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
@@ -349,6 +359,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/dashboard'
     | '/devices'
+    | '/drivers'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
     | '/_authenticated/devices'
+    | '/_authenticated/drivers'
     | '/_authenticated/fleet'
     | '/_authenticated/fuel'
     | '/_authenticated/fuel-entry'
@@ -471,6 +483,13 @@ declare module '@tanstack/react-router' {
       path: '/devices'
       fullPath: '/devices'
       preLoaderRoute: typeof AuthenticatedDevicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/drivers': {
+      id: '/_authenticated/drivers'
+      path: '/drivers'
+      fullPath: '/drivers'
+      preLoaderRoute: typeof AuthenticatedDriversRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/fleet': {
@@ -650,6 +669,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDevicesRoute: typeof AuthenticatedDevicesRoute
+  AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
   AuthenticatedFleetRoute: typeof AuthenticatedFleetRoute
   AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
   AuthenticatedFuelEntryRoute: typeof AuthenticatedFuelEntryRoute
@@ -682,6 +702,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDevicesRoute: AuthenticatedDevicesRoute,
+  AuthenticatedDriversRoute: AuthenticatedDriversRoute,
   AuthenticatedFleetRoute: AuthenticatedFleetRoute,
   AuthenticatedFuelRoute: AuthenticatedFuelRoute,
   AuthenticatedFuelEntryRoute: AuthenticatedFuelEntryRoute,
