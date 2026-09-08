@@ -57,6 +57,20 @@ const NAV: Record<Role, NavSection[]> = {
       ],
     },
     {
+      title: "Drivers",
+      items: [
+        { to: "/drivers", label: "Driver Registry", icon: Users },
+        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
+      ],
+    },
+    {
+      title: "Data entry",
+      items: [
+        { to: "/data-entry", label: "Enter Data", icon: Database },
+        { to: "/review-queue", label: "Review Queue", icon: ClipboardCheck },
+      ],
+    },
+    {
       title: "Administration",
       items: [
         { to: "/reports", label: "Reports", icon: BarChart3 },
@@ -78,8 +92,16 @@ const NAV: Record<Role, NavSection[]> = {
       ],
     },
     {
+      title: "Drivers",
+      items: [
+        { to: "/drivers", label: "Driver Registry", icon: Users },
+        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
+      ],
+    },
+    {
       title: "Operations",
       items: [
+        { to: "/data-entry", label: "Enter Data", icon: Database },
         { to: "/fuel-log", label: "Fuel Log", icon: Fuel },
         { to: "/hub-alerts", label: "Alerts", icon: Bell },
         { to: "/geofences", label: "Geofences", icon: MapPin },
@@ -120,11 +142,56 @@ const NAV: Record<Role, NavSection[]> = {
       items: [
         { to: "/scorecards", label: "Hub Scorecards", icon: BarChart3 },
         { to: "/reports", label: "Reports", icon: FileText },
+        { to: "/drivers", label: "Driver Registry", icon: Users },
         { to: "/alerts", label: "Alerts", icon: Bell },
         { to: "/idling", label: "Idling & Speeding", icon: Gauge },
         { to: "/geofences", label: "Geofences", icon: MapPin },
         { to: "/devices", label: "Device Register", icon: Cpu },
         { to: "/activity", label: "Activity Log", icon: History },
+        { to: "/handbook", label: "Handbook", icon: BookOpen },
+      ],
+    },
+  ],
+  data_entry_supervisor: [
+    {
+      title: "Data office",
+      items: [
+        { to: "/review-queue", label: "Review Queue", icon: ClipboardCheck },
+        { to: "/data-entry", label: "Enter Data", icon: Database },
+      ],
+    },
+    {
+      title: "Drivers",
+      items: [
+        { to: "/drivers", label: "Driver Registry", icon: Users },
+        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
+      ],
+    },
+    {
+      title: "Records",
+      items: [
+        { to: "/fuel", label: "Fuel Overview", icon: Fuel },
+        { to: "/projects", label: "Projects", icon: ClipboardList },
+        { to: "/fleet", label: "Fleet Register", icon: Truck },
+        { to: "/hubs", label: "All 19 Hubs", icon: MapIcon },
+        { to: "/activity", label: "Activity Log", icon: History },
+        { to: "/handbook", label: "Handbook", icon: BookOpen },
+      ],
+    },
+  ],
+  data_entry_staff: [
+    {
+      title: "My hub",
+      items: [
+        { to: "/data-entry", label: "Enter Data", icon: Database },
+        { to: "/drivers", label: "Driver Registry", icon: Users },
+        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
+      ],
+    },
+    {
+      title: "Reference",
+      items: [
+        { to: "/my-machines", label: "Hub Machines", icon: Truck },
         { to: "/handbook", label: "Handbook", icon: BookOpen },
       ],
     },
