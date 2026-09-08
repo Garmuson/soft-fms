@@ -406,3 +406,102 @@ export const fleetTracksQuery = (hubId: number | null, hours: number) =>
     },
   });
 
+
+export type Driver = {
+  id: string;
+  staff_no: string;
+  full_name: string;
+  phone: string | null;
+  photo_url: string | null;
+  hub_id: number;
+  is_active: boolean;
+  licence_number: string | null;
+  licence_class: string | null;
+  licence_issued: string | null;
+  licence_expiry: string | null;
+  certified_types: string[];
+  training_date: string | null;
+  medical_check_date: string | null;
+  employment_type: string;
+  date_joined: string | null;
+  supervisor_id: string | null;
+  next_of_kin_name: string | null;
+  next_of_kin_phone: string | null;
+  notes: string | null;
+  review_status: string;
+  created_at: string;
+};
+
+export const driversQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["drivers", hubId ?? "all"],
+    staleTime: 60_000,
+    queryFn: () => {
+      let q = supabase.from("drivers").select("*").order("full_name");
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<Driver[]>(q);
+    },
+  });
+
+export type DriverAssignment = {
+  id: string;
+  driver_id: string;
+  machine_id: string;
+  hub_id: number;
+  shift: string;
+  assigned_at: string;
+  unassigned_at: string | null;
+  notes: string | null;
+  review_status: string;
+};
+
+export const driverAssignmentsQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["driver_assignments", hubId ?? "all"],
+    staleTime: 30_000,
+    queryFn: () => {
+      let q = supabase
+        .from("driver_assignments")
+        .select("*")
+        .order("assigned_at", { ascending: false })
+        .limit(1000);
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<DriverAssignment[]>(q);
+    },
+  });
+
+/** Everything waiting for a data entry supervisor to approve or reject. */
+export const pendingEntriesQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["pending-entries", hubId ?? "all"],
+    refetchInterval: 30_000,
+    queryFn: async () => {
+      const scoped = <T extends { eq: (c: string, v: number) => T }>(q: T) =>
+        hubId ? q.eq("hub_id", hubId) : q;
+      const [drivers, assignments, fuel, maintenance] = await Promise.all([
+        unwrap<Driver[]>(
+          scoped(supabase.from("drivers").select("*").eq("review_status", "pending") as never),
+        ),
+        unwrap<DriverAssignment[]>(
+          scoped(
+            supabase
+              .from("driver_assignments")
+              .select("*")
+              .eq("review_status", "pending") as never,
+          ),
+        ),
+        unwrap<FuelLog[]>(
+          scoped(supabase.from("fuel_logs").select("*").eq("review_status", "pending") as never),
+        ),
+        unwrap<Maintenance[]>(
+          scoped(
+            supabase
+              .from("maintenance_records")
+              .select("*")
+              .eq("review_status", "pending") as never,
+          ),
+        ),
+      ]);
+      return { drivers, assignments, fuel, maintenance };
+    },
+  });
