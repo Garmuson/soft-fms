@@ -940,6 +940,8 @@ export type Database = {
         | "hub_supervisor"
         | "field_operator"
         | "ministry_analyst"
+        | "data_entry_supervisor"
+        | "data_entry_staff"
       device_kind: "tracker" | "monitor" | "tablet"
       device_status: "active" | "faulty" | "spare" | "retired"
       machine_status: "active" | "idle" | "maintenance" | "alert" | "offline"
@@ -1086,6 +1088,8 @@ export const Constants = {
         "hub_supervisor",
         "field_operator",
         "ministry_analyst",
+        "data_entry_supervisor",
+        "data_entry_staff",
       ],
       device_kind: ["tracker", "monitor", "tablet"],
       device_status: ["active", "faulty", "spare", "retired"],
