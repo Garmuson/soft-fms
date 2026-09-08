@@ -167,6 +167,7 @@ export const fuelLogsQuery = (hubId?: number | null, machineId?: string | null) 
       let q = supabase
         .from("fuel_logs")
         .select("*")
+        .neq("review_status", "rejected")
         .order("logged_at", { ascending: false })
         .limit(2000);
       if (hubId) q = q.eq("hub_id", hubId);
@@ -183,6 +184,7 @@ export const maintenanceQuery = (hubId?: number | null, machineId?: string | nul
       let q = supabase
         .from("maintenance_records")
         .select("*")
+        .neq("review_status", "rejected")
         .order("scheduled_at", { ascending: false })
         .limit(1000);
       if (hubId) q = q.eq("hub_id", hubId);
