@@ -13,7 +13,8 @@ import {
   EMPLOYMENT_TYPES,
   ENTRY_STATUS_LABEL,
   entryStatusClasses,
-  MACHINE_TYPE_LABEL,
+  MACHINE_TYPES,
+  typeLabel,
 } from "@/lib/fleet";
 
 export const Route = createFileRoute("/_authenticated/drivers")({
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/_authenticated/drivers")({
   ),
 });
 
-const CERT_TYPES = Object.keys(MACHINE_TYPE_LABEL);
+const CERT_TYPES = MACHINE_TYPES.map((t) => t.value);
 
 const EMPTY = {
   staff_no: "",
@@ -333,7 +334,7 @@ function DriversPage() {
                   <td className="px-2 py-2">
                     {(d.certified_types ?? []).length
                       ? (d.certified_types ?? [])
-                          .map((t) => MACHINE_TYPE_LABEL[t as keyof typeof MACHINE_TYPE_LABEL] ?? t)
+                          .map((t) => typeLabel(t))
                           .join(", ")
                       : "—"}
                   </td>
@@ -448,7 +449,7 @@ function DriversPage() {
                       }
                       className={`rounded-md border px-2 py-1 text-[11px] ${on ? "border-teal bg-green-dim text-teal" : "border-border text-muted-foreground"}`}
                     >
-                      {MACHINE_TYPE_LABEL[t as keyof typeof MACHINE_TYPE_LABEL] ?? t}
+                      {typeLabel(t)}
                     </button>
                   );
                 })}
