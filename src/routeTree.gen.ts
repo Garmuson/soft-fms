@@ -37,6 +37,7 @@ import { Route as AuthenticatedMyMachinesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedOperatorDashboardRouteImport } from './routes/_authenticated/operator-dashboard'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedReviewQueueRouteImport } from './routes/_authenticated/review-queue'
 import { Route as AuthenticatedScorecardsRouteImport } from './routes/_authenticated/scorecards'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
@@ -187,6 +188,12 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReviewQueueRoute =
+  AuthenticatedReviewQueueRouteImport.update({
+    id: '/review-queue',
+    path: '/review-queue',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedScorecardsRoute = AuthenticatedScorecardsRouteImport.update({
   id: '/scorecards',
   path: '/scorecards',
@@ -252,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/review-queue': typeof AuthenticatedReviewQueueRoute
   '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -288,6 +296,7 @@ export interface FileRoutesByTo {
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/review-queue': typeof AuthenticatedReviewQueueRoute
   '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -326,6 +335,7 @@ export interface FileRoutesById {
   '/_authenticated/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/review-queue': typeof AuthenticatedReviewQueueRoute
   '/_authenticated/scorecards': typeof AuthenticatedScorecardsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/review-queue'
     | '/scorecards'
     | '/settings'
     | '/tasks'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/review-queue'
     | '/scorecards'
     | '/settings'
     | '/tasks'
@@ -437,6 +449,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operator-dashboard'
     | '/_authenticated/projects'
     | '/_authenticated/reports'
+    | '/_authenticated/review-queue'
     | '/_authenticated/scorecards'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
@@ -650,6 +663,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/review-queue': {
+      id: '/_authenticated/review-queue'
+      path: '/review-queue'
+      fullPath: '/review-queue'
+      preLoaderRoute: typeof AuthenticatedReviewQueueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/scorecards': {
       id: '/_authenticated/scorecards'
       path: '/scorecards'
@@ -728,6 +748,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOperatorDashboardRoute: typeof AuthenticatedOperatorDashboardRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedReviewQueueRoute: typeof AuthenticatedReviewQueueRoute
   AuthenticatedScorecardsRoute: typeof AuthenticatedScorecardsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -763,6 +784,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOperatorDashboardRoute: AuthenticatedOperatorDashboardRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedReviewQueueRoute: AuthenticatedReviewQueueRoute,
   AuthenticatedScorecardsRoute: AuthenticatedScorecardsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
