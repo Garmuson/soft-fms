@@ -1,6 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 
-type Role = "hq_admin" | "hub_supervisor" | "field_operator" | "ministry_analyst";
+type Role =
+  | "hq_admin"
+  | "hub_supervisor"
+  | "field_operator"
+  | "ministry_analyst"
+  | "data_entry_supervisor"
+  | "data_entry_staff";
 
 const DEMO_USERS: { email: string; name: string; role: Role; hub: number | null }[] = [
   { email: "hq@sppcc.gov.lr", name: "SPPCC Administrator", role: "hq_admin", hub: null },
@@ -8,6 +14,18 @@ const DEMO_USERS: { email: string; name: string; role: Role; hub: number | null 
   { email: "hub10@sppcc.gov.lr", name: "Hub 10 Supervisor", role: "hub_supervisor", hub: 10 },
   { email: "operator@sppcc.gov.lr", name: "Field Operator", role: "field_operator", hub: 2 },
   { email: "ministry@sppcc.gov.lr", name: "Ministry Analyst", role: "ministry_analyst", hub: null },
+  {
+    email: "dataentry@sppcc.gov.lr",
+    name: "Data Entry Supervisor",
+    role: "data_entry_supervisor",
+    hub: null,
+  },
+  {
+    email: "dataclerk@sppcc.gov.lr",
+    name: "Data Entry Staff — Hub 2",
+    role: "data_entry_staff",
+    hub: 2,
+  },
 ];
 
 const PASSWORD = "password123";

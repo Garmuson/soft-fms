@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.enforce_entry_review() FROM anon, authenticated, public;

@@ -52,3 +52,12 @@
 - [x] Operator offline queue with retry/sync panel on operator home
 - [x] User handbook, training plan, support/warranty page (/handbook)
 - [x] Ministry hub scorecards (/scorecards)
+
+## 8. Drivers & data entry (done)
+- [x] Roles: data_entry_supervisor (national) and data_entry_staff (hub-scoped) + demo accounts
+- [x] Driver registry /drivers — identity, licence, certifications, employment, CSV export
+- [x] Driver assignments /driver-assignments — shift-based, current + history, end assignment
+- [x] Data entry desk /data-entry — fuel consumption, maintenance, projects
+- [x] Review queue /review-queue — supervisor approve/reject with audit trail
+- [x] Database guard forces staff entries to "pending" and blocks self-approval
+- [x] Seeded 95 drivers (5 per hub) and current machine assignments

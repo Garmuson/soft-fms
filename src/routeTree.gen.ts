@@ -16,7 +16,10 @@ import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDataEntryRouteImport } from './routes/_authenticated/data-entry'
 import { Route as AuthenticatedDevicesRouteImport } from './routes/_authenticated/devices'
+import { Route as AuthenticatedDriverAssignmentsRouteImport } from './routes/_authenticated/driver-assignments'
+import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
 import { Route as AuthenticatedFleetRouteImport } from './routes/_authenticated/fleet'
 import { Route as AuthenticatedFuelRouteImport } from './routes/_authenticated/fuel'
 import { Route as AuthenticatedFuelEntryRouteImport } from './routes/_authenticated/fuel-entry'
@@ -34,6 +37,7 @@ import { Route as AuthenticatedMyMachinesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedOperatorDashboardRouteImport } from './routes/_authenticated/operator-dashboard'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedReviewQueueRouteImport } from './routes/_authenticated/review-queue'
 import { Route as AuthenticatedScorecardsRouteImport } from './routes/_authenticated/scorecards'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
@@ -76,9 +80,25 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDataEntryRoute = AuthenticatedDataEntryRouteImport.update({
+  id: '/data-entry',
+  path: '/data-entry',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDevicesRoute = AuthenticatedDevicesRouteImport.update({
   id: '/devices',
   path: '/devices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDriverAssignmentsRoute =
+  AuthenticatedDriverAssignmentsRouteImport.update({
+    id: '/driver-assignments',
+    path: '/driver-assignments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDriversRoute = AuthenticatedDriversRouteImport.update({
+  id: '/drivers',
+  path: '/drivers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFleetRoute = AuthenticatedFleetRouteImport.update({
@@ -168,6 +188,12 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReviewQueueRoute =
+  AuthenticatedReviewQueueRouteImport.update({
+    id: '/review-queue',
+    path: '/review-queue',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedScorecardsRoute = AuthenticatedScorecardsRouteImport.update({
   id: '/scorecards',
   path: '/scorecards',
@@ -212,7 +238,10 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/data-entry': typeof AuthenticatedDataEntryRoute
   '/devices': typeof AuthenticatedDevicesRoute
+  '/driver-assignments': typeof AuthenticatedDriverAssignmentsRoute
+  '/drivers': typeof AuthenticatedDriversRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -230,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/review-queue': typeof AuthenticatedReviewQueueRoute
   '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -245,7 +275,10 @@ export interface FileRoutesByTo {
   '/alerts': typeof AuthenticatedAlertsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/data-entry': typeof AuthenticatedDataEntryRoute
   '/devices': typeof AuthenticatedDevicesRoute
+  '/driver-assignments': typeof AuthenticatedDriverAssignmentsRoute
+  '/drivers': typeof AuthenticatedDriversRoute
   '/fleet': typeof AuthenticatedFleetRoute
   '/fuel': typeof AuthenticatedFuelRoute
   '/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -263,6 +296,7 @@ export interface FileRoutesByTo {
   '/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/review-queue': typeof AuthenticatedReviewQueueRoute
   '/scorecards': typeof AuthenticatedScorecardsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -280,7 +314,10 @@ export interface FileRoutesById {
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/data-entry': typeof AuthenticatedDataEntryRoute
   '/_authenticated/devices': typeof AuthenticatedDevicesRoute
+  '/_authenticated/driver-assignments': typeof AuthenticatedDriverAssignmentsRoute
+  '/_authenticated/drivers': typeof AuthenticatedDriversRoute
   '/_authenticated/fleet': typeof AuthenticatedFleetRoute
   '/_authenticated/fuel': typeof AuthenticatedFuelRoute
   '/_authenticated/fuel-entry': typeof AuthenticatedFuelEntryRoute
@@ -298,6 +335,7 @@ export interface FileRoutesById {
   '/_authenticated/operator-dashboard': typeof AuthenticatedOperatorDashboardRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/review-queue': typeof AuthenticatedReviewQueueRoute
   '/_authenticated/scorecards': typeof AuthenticatedScorecardsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -315,7 +353,10 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/data-entry'
     | '/devices'
+    | '/driver-assignments'
+    | '/drivers'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
@@ -333,6 +374,7 @@ export interface FileRouteTypes {
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/review-queue'
     | '/scorecards'
     | '/settings'
     | '/tasks'
@@ -348,7 +390,10 @@ export interface FileRouteTypes {
     | '/alerts'
     | '/analytics'
     | '/dashboard'
+    | '/data-entry'
     | '/devices'
+    | '/driver-assignments'
+    | '/drivers'
     | '/fleet'
     | '/fuel'
     | '/fuel-entry'
@@ -366,6 +411,7 @@ export interface FileRouteTypes {
     | '/operator-dashboard'
     | '/projects'
     | '/reports'
+    | '/review-queue'
     | '/scorecards'
     | '/settings'
     | '/tasks'
@@ -382,7 +428,10 @@ export interface FileRouteTypes {
     | '/_authenticated/alerts'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
+    | '/_authenticated/data-entry'
     | '/_authenticated/devices'
+    | '/_authenticated/driver-assignments'
+    | '/_authenticated/drivers'
     | '/_authenticated/fleet'
     | '/_authenticated/fuel'
     | '/_authenticated/fuel-entry'
@@ -400,6 +449,7 @@ export interface FileRouteTypes {
     | '/_authenticated/operator-dashboard'
     | '/_authenticated/projects'
     | '/_authenticated/reports'
+    | '/_authenticated/review-queue'
     | '/_authenticated/scorecards'
     | '/_authenticated/settings'
     | '/_authenticated/tasks'
@@ -466,11 +516,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/data-entry': {
+      id: '/_authenticated/data-entry'
+      path: '/data-entry'
+      fullPath: '/data-entry'
+      preLoaderRoute: typeof AuthenticatedDataEntryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/devices': {
       id: '/_authenticated/devices'
       path: '/devices'
       fullPath: '/devices'
       preLoaderRoute: typeof AuthenticatedDevicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/driver-assignments': {
+      id: '/_authenticated/driver-assignments'
+      path: '/driver-assignments'
+      fullPath: '/driver-assignments'
+      preLoaderRoute: typeof AuthenticatedDriverAssignmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/drivers': {
+      id: '/_authenticated/drivers'
+      path: '/drivers'
+      fullPath: '/drivers'
+      preLoaderRoute: typeof AuthenticatedDriversRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/fleet': {
@@ -592,6 +663,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/review-queue': {
+      id: '/_authenticated/review-queue'
+      path: '/review-queue'
+      fullPath: '/review-queue'
+      preLoaderRoute: typeof AuthenticatedReviewQueueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/scorecards': {
       id: '/_authenticated/scorecards'
       path: '/scorecards'
@@ -649,7 +727,10 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDataEntryRoute: typeof AuthenticatedDataEntryRoute
   AuthenticatedDevicesRoute: typeof AuthenticatedDevicesRoute
+  AuthenticatedDriverAssignmentsRoute: typeof AuthenticatedDriverAssignmentsRoute
+  AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
   AuthenticatedFleetRoute: typeof AuthenticatedFleetRoute
   AuthenticatedFuelRoute: typeof AuthenticatedFuelRoute
   AuthenticatedFuelEntryRoute: typeof AuthenticatedFuelEntryRoute
@@ -667,6 +748,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOperatorDashboardRoute: typeof AuthenticatedOperatorDashboardRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedReviewQueueRoute: typeof AuthenticatedReviewQueueRoute
   AuthenticatedScorecardsRoute: typeof AuthenticatedScorecardsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -681,7 +763,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDataEntryRoute: AuthenticatedDataEntryRoute,
   AuthenticatedDevicesRoute: AuthenticatedDevicesRoute,
+  AuthenticatedDriverAssignmentsRoute: AuthenticatedDriverAssignmentsRoute,
+  AuthenticatedDriversRoute: AuthenticatedDriversRoute,
   AuthenticatedFleetRoute: AuthenticatedFleetRoute,
   AuthenticatedFuelRoute: AuthenticatedFuelRoute,
   AuthenticatedFuelEntryRoute: AuthenticatedFuelEntryRoute,
@@ -699,6 +784,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOperatorDashboardRoute: AuthenticatedOperatorDashboardRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedReviewQueueRoute: AuthenticatedReviewQueueRoute,
   AuthenticatedScorecardsRoute: AuthenticatedScorecardsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,

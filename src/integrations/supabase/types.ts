@@ -202,9 +202,211 @@ export type Database = {
           },
         ]
       }
+      driver_assignments: {
+        Row: {
+          assigned_at: string
+          created_at: string
+          created_by: string | null
+          driver_id: string
+          hub_id: number
+          id: string
+          machine_id: string
+          notes: string | null
+          review_status: Database["public"]["Enums"]["entry_status"]
+          reviewed_at: string | null
+          reviewed_by: string | null
+          shift: string
+          unassigned_at: string | null
+        }
+        Insert: {
+          assigned_at?: string
+          created_at?: string
+          created_by?: string | null
+          driver_id: string
+          hub_id: number
+          id?: string
+          machine_id: string
+          notes?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          shift?: string
+          unassigned_at?: string | null
+        }
+        Update: {
+          assigned_at?: string
+          created_at?: string
+          created_by?: string | null
+          driver_id?: string
+          hub_id?: number
+          id?: string
+          machine_id?: string
+          notes?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          shift?: string
+          unassigned_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "driver_assignments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_assignments_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_assignments_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_assignments_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_assignments_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drivers: {
+        Row: {
+          certified_types: string[]
+          created_at: string
+          created_by: string | null
+          date_joined: string | null
+          employment_type: string
+          full_name: string
+          hub_id: number
+          id: string
+          is_active: boolean
+          licence_class: string | null
+          licence_expiry: string | null
+          licence_issued: string | null
+          licence_number: string | null
+          medical_check_date: string | null
+          next_of_kin_name: string | null
+          next_of_kin_phone: string | null
+          notes: string | null
+          phone: string | null
+          photo_url: string | null
+          review_status: Database["public"]["Enums"]["entry_status"]
+          reviewed_at: string | null
+          reviewed_by: string | null
+          staff_no: string
+          supervisor_id: string | null
+          training_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          certified_types?: string[]
+          created_at?: string
+          created_by?: string | null
+          date_joined?: string | null
+          employment_type?: string
+          full_name: string
+          hub_id: number
+          id?: string
+          is_active?: boolean
+          licence_class?: string | null
+          licence_expiry?: string | null
+          licence_issued?: string | null
+          licence_number?: string | null
+          medical_check_date?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          notes?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          staff_no: string
+          supervisor_id?: string | null
+          training_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          certified_types?: string[]
+          created_at?: string
+          created_by?: string | null
+          date_joined?: string | null
+          employment_type?: string
+          full_name?: string
+          hub_id?: number
+          id?: string
+          is_active?: boolean
+          licence_class?: string | null
+          licence_expiry?: string | null
+          licence_issued?: string | null
+          licence_number?: string | null
+          medical_check_date?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          notes?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          staff_no?: string
+          supervisor_id?: string | null
+          training_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drivers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drivers_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drivers_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drivers_supervisor_id_fkey"
+            columns: ["supervisor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fuel_logs: {
         Row: {
           cost_usd: number
+          created_by: string | null
+          driver_id: string | null
           flag_reason: string | null
           fuel_level_after: number | null
           fuel_level_before: number | null
@@ -217,10 +419,15 @@ export type Database = {
           machine_id: string
           notes: string | null
           operator_id: string | null
+          review_status: Database["public"]["Enums"]["entry_status"]
+          reviewed_at: string | null
+          reviewed_by: string | null
           volume_litres: number
         }
         Insert: {
           cost_usd?: number
+          created_by?: string | null
+          driver_id?: string | null
           flag_reason?: string | null
           fuel_level_after?: number | null
           fuel_level_before?: number | null
@@ -233,10 +440,15 @@ export type Database = {
           machine_id: string
           notes?: string | null
           operator_id?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           volume_litres: number
         }
         Update: {
           cost_usd?: number
+          created_by?: string | null
+          driver_id?: string | null
           flag_reason?: string | null
           fuel_level_after?: number | null
           fuel_level_before?: number | null
@@ -249,9 +461,26 @@ export type Database = {
           machine_id?: string
           notes?: string | null
           operator_id?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           volume_litres?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "fuel_logs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fuel_logs_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "fuel_logs_hub_id_fkey"
             columns: ["hub_id"]
@@ -269,6 +498,13 @@ export type Database = {
           {
             foreignKeyName: "fuel_logs_operator_id_fkey"
             columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fuel_logs_reviewed_by_fkey"
+            columns: ["reviewed_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -611,6 +847,7 @@ export type Database = {
         Row: {
           completed_at: string | null
           cost_usd: number | null
+          created_by: string | null
           description: string | null
           hub_id: number
           id: string
@@ -618,6 +855,9 @@ export type Database = {
           machine_id: string
           notes: string | null
           parts_used: string | null
+          review_status: Database["public"]["Enums"]["entry_status"]
+          reviewed_at: string | null
+          reviewed_by: string | null
           scheduled_at: string
           status: string
           technician_name: string | null
@@ -626,6 +866,7 @@ export type Database = {
         Insert: {
           completed_at?: string | null
           cost_usd?: number | null
+          created_by?: string | null
           description?: string | null
           hub_id: number
           id?: string
@@ -633,6 +874,9 @@ export type Database = {
           machine_id: string
           notes?: string | null
           parts_used?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheduled_at?: string
           status?: string
           technician_name?: string | null
@@ -641,6 +885,7 @@ export type Database = {
         Update: {
           completed_at?: string | null
           cost_usd?: number | null
+          created_by?: string | null
           description?: string | null
           hub_id?: number
           id?: string
@@ -648,12 +893,22 @@ export type Database = {
           machine_id?: string
           notes?: string | null
           parts_used?: string | null
+          review_status?: Database["public"]["Enums"]["entry_status"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           scheduled_at?: string
           status?: string
           technician_name?: string | null
           type?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "maintenance_records_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "maintenance_records_hub_id_fkey"
             columns: ["hub_id"]
@@ -666,6 +921,13 @@ export type Database = {
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_records_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -919,6 +1181,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_enter_hub: { Args: { _hub_id: number }; Returns: boolean }
       can_read_all: { Args: never; Returns: boolean }
       can_read_hub: { Args: { _hub_id: number }; Returns: boolean }
       can_write_hub: { Args: { _hub_id: number }; Returns: boolean }
@@ -929,6 +1192,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_data_reviewer: { Args: never; Returns: boolean }
       is_hq: { Args: never; Returns: boolean }
       my_hub_id: { Args: never; Returns: number }
       my_role: { Args: never; Returns: Database["public"]["Enums"]["app_role"] }
@@ -940,8 +1204,11 @@ export type Database = {
         | "hub_supervisor"
         | "field_operator"
         | "ministry_analyst"
+        | "data_entry_supervisor"
+        | "data_entry_staff"
       device_kind: "tracker" | "monitor" | "tablet"
       device_status: "active" | "faulty" | "spare" | "retired"
+      entry_status: "pending" | "approved" | "rejected"
       machine_status: "active" | "idle" | "maintenance" | "alert" | "offline"
       machine_type:
         | "motor_grader"
@@ -1086,9 +1353,12 @@ export const Constants = {
         "hub_supervisor",
         "field_operator",
         "ministry_analyst",
+        "data_entry_supervisor",
+        "data_entry_staff",
       ],
       device_kind: ["tracker", "monitor", "tablet"],
       device_status: ["active", "faulty", "spare", "retired"],
+      entry_status: ["pending", "approved", "rejected"],
       machine_status: ["active", "idle", "maintenance", "alert", "offline"],
       machine_type: [
         "motor_grader",

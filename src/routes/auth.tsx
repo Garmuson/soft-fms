@@ -34,6 +34,8 @@ const DEMO = [
   { email: "hub10@sppcc.gov.lr", label: "Hub 10 Supervisor (Rivercess)" },
   { email: "operator@sppcc.gov.lr", label: "Field Operator (Hub 2)" },
   { email: "ministry@sppcc.gov.lr", label: "Ministry Analyst" },
+  { email: "dataentry@sppcc.gov.lr", label: "Data Entry Supervisor (all hubs)" },
+  { email: "dataclerk@sppcc.gov.lr", label: "Data Entry Staff (Hub 2)" },
 ];
 
 function AuthPage() {
