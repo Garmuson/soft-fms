@@ -104,7 +104,10 @@ function DataEntryPage() {
       review_status: review,
     });
     setBusy(false);
-    if (error) return toast.error("Could not save the fuel record", { description: error.message });
+    if (error) {
+      toast.error("Could not save the fuel record", { description: error.message });
+      return;
+    }
     void logAudit(profile, {
       action: "entered fuel record",
       entity: "fuel_log",
@@ -142,8 +145,10 @@ function DataEntryPage() {
       review_status: review,
     });
     setBusy(false);
-    if (error)
-      return toast.error("Could not save the maintenance record", { description: error.message });
+    if (error) {
+      toast.error("Could not save the maintenance record", { description: error.message });
+      return;
+    }
     void logAudit(profile, {
       action: "entered maintenance record",
       entity: "maintenance",
@@ -173,7 +178,10 @@ function DataEntryPage() {
       description: proj.description || null,
     });
     setBusy(false);
-    if (error) return toast.error("Could not save the project", { description: error.message });
+    if (error) {
+      toast.error("Could not save the project", { description: error.message });
+      return;
+    }
     void logAudit(profile, {
       action: "created project",
       entity: "project",

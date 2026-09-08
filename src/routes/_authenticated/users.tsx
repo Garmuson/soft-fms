@@ -40,6 +40,9 @@ const ROLE_DESC: Record<Role, string> = {
   hub_supervisor: "Access limited strictly to one assigned hub.",
   field_operator: "Mobile access to their own assigned machines only.",
   ministry_analyst: "Read-only national overview and reports.",
+  data_entry_supervisor:
+    "Reviews and approves records entered by hub data entry staff, nationwide.",
+  data_entry_staff: "Enters fuel, maintenance, driver and project data for one assigned hub.",
 };
 
 function initials(name: string) {
