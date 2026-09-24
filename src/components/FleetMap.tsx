@@ -133,10 +133,10 @@ export default function FleetMap({
               center={[Number(m.lat), Number(m.lng)]}
               radius={5}
               pathOptions={{
-                color: STATUS_HEX[m.status] ?? "#7d8590",
-                fillColor: STATUS_HEX[m.status] ?? "#7d8590",
-                fillOpacity: 0.85,
-                weight: 1.5,
+                color: "#F2C200",
+                fillColor: STATUS_HEX[m.status] ?? "#888888",
+                fillOpacity: 0.95,
+                weight: 2,
               }}
             >
               <Popup>
