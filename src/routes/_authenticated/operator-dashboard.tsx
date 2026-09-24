@@ -36,7 +36,7 @@ function Gauge({ pct }: { pct: number }) {
   const color = pct < 25 ? "#da3633" : pct < 50 ? "#f0883e" : "#2ea043";
   return (
     <svg viewBox="0 0 64 64" className="size-16" aria-label={`Fuel ${pct}%`}>
-      <circle cx="32" cy="32" r={r} fill="none" stroke="#21262d" strokeWidth="6" />
+      <circle cx="32" cy="32" r={r} fill="none" stroke="var(--cat-iron)" strokeWidth="6" />
       <circle
         cx="32"
         cy="32"

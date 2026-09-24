@@ -79,7 +79,7 @@ function FuelPage() {
     };
   });
 
-  const COLORS = ["#2ea043", "#d4a017", "#388bfd", "#f0883e", "#da3633", "#7d8590"];
+  const COLORS = ["#F2C200", "#888888", "#388bfd", "#f0883e", "#da3633", "#7d8590"];
 
   return (
     <>
@@ -104,11 +104,11 @@ function FuelPage() {
           <div className="h-64">
             <ResponsiveContainer>
               <LineChart data={trend}>
-                <CartesianGrid stroke="#21262d" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#ffffff" }} />
-                <YAxis tick={{ fontSize: 10, fill: "#ffffff" }} />
+                <CartesianGrid stroke="var(--cat-iron)" />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "var(--cat-ash)" }} />
+                <YAxis tick={{ fontSize: 10, fill: "var(--cat-ash)" }} />
                 <Tooltip
-                  contentStyle={{ background: "#1c2330", border: "1px solid #30363d", fontSize: 11 }}
+                  contentStyle={{ background: "var(--cat-steel)", border: "1px solid var(--cat-yellow)", fontSize: 11 }}
                 />
                 {MACHINE_TYPES.map((t, i) => (
                   <Line

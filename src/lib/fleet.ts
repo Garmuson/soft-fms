@@ -82,17 +82,17 @@ export function statusLabel(s: string): string {
 
 /** Hex colour per machine status — used by map markers and charts. */
 export const STATUS_HEX: Record<string, string> = {
-  active: "#2ea043",
-  idle: "#f0883e",
-  maintenance: "#388bfd",
-  alert: "#da3633",
-  offline: "#7d8590",
+  active: "#4CAF50",
+  idle: "#FF8C00",
+  maintenance: "#1565C0",
+  alert: "#D32F2F",
+  offline: "#888888",
 };
 
 export const LEVEL_HEX: Record<string, string> = {
-  critical: "#da3633",
-  warning: "#f0883e",
-  info: "#3fb950",
+  critical: "#D32F2F",
+  warning: "#FF8C00",
+  info: "#1565C0",
 };
 
 export function statusClasses(s: string): string {
@@ -122,9 +122,9 @@ export function levelClasses(level: string): string {
 }
 
 export function utilColor(pct: number): string {
-  if (pct >= 80) return "#2ea043";
-  if (pct >= 70) return "#f0883e";
-  return "#da3633";
+  if (pct >= 70) return "var(--gold)";
+  if (pct >= 50) return "var(--amber)";
+  return "var(--red)";
 }
 
 export function timeAgo(iso: string | null | undefined): string {

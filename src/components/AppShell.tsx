@@ -305,7 +305,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       )}
 
-      <header className="sticky top-0 z-40 flex h-[52px] items-center gap-3 border-b border-border bg-surface px-3">
+      <header className="sticky top-0 z-40 flex h-[52px] items-center gap-3 border-b-2 border-b-gold bg-surface px-3">
         {!isOperator && (
           <button
             onClick={() => setCollapsed((c) => !c)}
@@ -316,10 +316,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </button>
         )}
         <Link to="/" className="flex items-center gap-2">
-          <span className="grid size-6 place-items-center rounded-md bg-green-dim text-[13px]">
+          <span className="grid size-6 place-items-center rounded-md bg-gold-dim text-[13px]">
             🚜
           </span>
-          <span className="text-sm font-semibold tracking-tight">YM-FMS</span>
+          <span className="text-sm font-semibold tracking-tight text-gold">YM-FMS</span>
         </Link>
         <span className="hidden h-5 w-px bg-border sm:block" />
         <span className="hidden truncate text-xs text-muted-foreground sm:block">{context}</span>
@@ -391,7 +391,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                           className={cn(
                             "mx-1.5 flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
                             active
-                              ? "bg-green-dim text-teal"
+                              ? "border-l-[3px] border-l-gold bg-gold-dim text-gold"
                               : "text-muted-foreground hover:bg-surface-2 hover:text-foreground",
                           )}
                           title={item.label}
