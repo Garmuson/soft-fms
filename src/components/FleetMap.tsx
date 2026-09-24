@@ -78,7 +78,7 @@ export default function FleetMap({
       >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           className="map-dark-tiles"
         />
         {onMapClick && <ClickCatcher onMapClick={onMapClick} />}
@@ -89,7 +89,7 @@ export default function FleetMap({
               [Number(h.lat_center) - 0.16, Number(h.lng_center) - 0.16],
               [Number(h.lat_center) + 0.16, Number(h.lng_center) + 0.16],
             ]}
-            pathOptions={{ color: "#d4a017", weight: 1, fillOpacity: 0.03, dashArray: "3 4" }}
+            pathOptions={{ color: "rgba(242,194,0,0.4)", fillColor: "#F2C200", weight: 1, fillOpacity: 0.08, dashArray: "3 4" }}
           />
         ))}
         {fences.map((f) => (
@@ -120,7 +120,7 @@ export default function FleetMap({
           <CircleMarker
             center={[Number(pin.lat), Number(pin.lng)]}
             radius={8}
-            pathOptions={{ color: "#d4a017", fillColor: "#d4a017", fillOpacity: 0.9, weight: 2 }}
+            pathOptions={{ color: "#F2C200", fillColor: "#F2C200", fillOpacity: 0.9, weight: 2 }}
           >
             {pin.label && <Popup>{pin.label}</Popup>}
           </CircleMarker>

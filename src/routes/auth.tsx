@@ -89,7 +89,7 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-4 py-10">
       <div className="w-full max-w-4xl overflow-hidden rounded-lg border border-border bg-surface md:grid md:grid-cols-2">
-        <div className="hidden flex-col justify-between border-r border-border bg-[linear-gradient(160deg,#1b4332_0%,#0d1117_75%)] p-8 md:flex">
+        <div className="hidden flex-col justify-between border-r border-border bg-[radial-gradient(ellipse_at_50%_0%,rgba(242,194,0,0.12)_0%,transparent_60%)] p-8 md:flex">
           <div>
             <div className="flex items-center gap-2">
               <span className="grid size-9 place-items-center rounded-md bg-green-dim text-lg">🚜</span>
