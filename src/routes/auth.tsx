@@ -92,9 +92,9 @@ function AuthPage() {
         <div className="hidden flex-col justify-between border-r border-border bg-[radial-gradient(ellipse_at_50%_0%,rgba(242,194,0,0.12)_0%,transparent_60%)] p-8 md:flex">
           <div>
             <div className="flex items-center gap-2">
-              <span className="grid size-9 place-items-center rounded-md bg-green-dim text-lg">🚜</span>
+              <span className="grid size-9 place-items-center rounded-md bg-gold-dim text-lg">🚜</span>
               <div>
-                <p className="text-sm font-semibold tracking-tight">YM-FMS</p>
+                <p className="text-sm font-semibold tracking-tight text-gold">YM-FMS</p>
                 <p className="text-[11px] text-muted-foreground">
                   Yellow Machine Fleet Management System
                 </p>
