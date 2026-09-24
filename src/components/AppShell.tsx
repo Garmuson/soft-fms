@@ -319,7 +319,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <span className="grid size-6 place-items-center rounded-md bg-gold-dim text-[13px]">
             🚜
           </span>
-          <span className="text-sm font-semibold tracking-tight">YM-FMS</span>
+          <span className="text-sm font-semibold tracking-tight text-gold">YM-FMS</span>
         </Link>
         <span className="hidden h-5 w-px bg-border sm:block" />
         <span className="hidden truncate text-xs text-muted-foreground sm:block">{context}</span>
