@@ -77,8 +77,8 @@ export default function FleetMap({
         preferCanvas
       >
         <TileLayer
-          attribution="&copy; OpenStreetMap contributors &copy; CARTO"
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution="&copy; OpenStreetMap contributors"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           className="map-dark-tiles"
         />
         {onMapClick && <ClickCatcher onMapClick={onMapClick} />}
