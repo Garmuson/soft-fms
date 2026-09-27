@@ -41,15 +41,15 @@ const dateStr = (v: unknown) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.
 
 export const Route = createFileRoute("/_authenticated/driver-assignments")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    driver: str(s.driver),
-    machine: str(s.machine),
-    hub: num(s.hub),
-    shift: str(s.shift),
-    from: dateStr(s.from),
-    to: dateStr(s.to),
-    status: str(s.status),
-    page: num(s.page),
-    size: [25, 50, 100].includes(Number(s.size)) ? Number(s.size) : undefined,
+    driver: str(s["driver"]),
+    machine: str(s["machine"]),
+    hub: num(s["hub"]),
+    shift: str(s["shift"]),
+    from: dateStr(s["from"]),
+    to: dateStr(s["to"]),
+    status: str(s["status"]),
+    page: num(s["page"]),
+    size: [25, 50, 100].includes(Number(s["size"])) ? Number(s["size"]) : undefined,
   }),
   head: () => ({
     meta: [
