@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ClipboardList, X } from "lucide-react";
-import { machinesQuery, profilesQuery, projectsQuery, workOrdersQuery } from "@/lib/api";
+import { machinesQuery, profilesQuery, projectsQuery, type WorkOrder } from "@/lib/api";
+import { Paging, pageRange } from "@/components/Paging";
+import { cleanSearch, cleanText } from "@/lib/sanitize";
+import { useDebounced } from "@/hooks/use-debounced";
 import { supabase } from "@/integrations/supabase/client";
 import {
   EmptyState,
@@ -59,15 +62,38 @@ function WorkOrdersPage() {
     scheduled_date: new Date().toISOString().slice(0, 10),
   });
 
-  const woQ = useQuery(workOrdersQuery(hubId));
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(25);
+  const term = cleanSearch(useDebounced(search, 300));
+  useEffect(() => setPage(0), [term, status, priority]);
+  const woQ = useQuery({
+    queryKey: ["work_orders", "page", hubId, term, status, priority, page, size],
+    enabled: !!hubId,
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const [from, to] = pageRange(page, size);
+      let q = supabase
+        .from("work_orders")
+        .select("*", { count: "exact" })
+        .eq("hub_id", hubId!)
+        .order("created_at", { ascending: false })
+        .range(from, to);
+      if (term) q = q.ilike("title", `%${term}%`);
+      if (status) q = q.eq("status", status as "assigned");
+      if (priority) q = q.eq("priority", priority as "low");
+      const { data, count, error } = await q;
+      if (error) throw new Error(error.message);
+      return { rows: (data ?? []) as WorkOrder[], total: count ?? 0 };
+    },
+  });
   const { data: machines = [] } = useQuery(machinesQuery(hubId));
   const { data: projects = [] } = useQuery(projectsQuery(hubId));
   const { data: profiles = [] } = useQuery(profilesQuery());
 
   const hubStaff = profiles.filter((p) => p.hub_id === hubId);
-  const rows = (woQ.data ?? []).filter(
-    (w) => (!status || w.status === status) && (!priority || w.priority === priority),
-  );
+  const rows = woQ.data?.rows ?? [];
+  const total = woQ.data?.total ?? 0;
 
   async function updateStatus(id: string, next: string) {
     const { error } = await supabase
@@ -85,14 +111,14 @@ function WorkOrdersPage() {
   }
 
   async function create() {
-    if (!form.title || !hubId) {
+    if (!cleanText(form.title) || !hubId) {
       toast.error("A title is required");
       return;
     }
     const { error } = await supabase.from("work_orders").insert({
       hub_id: hubId,
-      title: form.title,
-      description: form.description || null,
+      title: cleanText(form.title, 200),
+      description: cleanText(form.description, 2000) || null,
       machine_id: form.machine_id || null,
       operator_id: form.operator_id || null,
       project_id: form.project_id || null,
@@ -114,7 +140,7 @@ function WorkOrdersPage() {
     <>
       <PageHeader
         title="Work Orders"
-        subtitle={`${rows.length} work orders`}
+        subtitle={`${total} work orders`}
         actions={
           <button className={btn.primary} onClick={() => setCreating(true)}>
             New Work Order
@@ -123,6 +149,14 @@ function WorkOrdersPage() {
       />
 
       <div className="mb-3 flex flex-wrap gap-2">
+        <input
+          className={`${inputCls} max-w-64`}
+          placeholder="Search by title…"
+          aria-label="Search work orders by title"
+          maxLength={60}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
         <select
           className={`${inputCls} max-w-40`}
           value={status}
@@ -207,6 +241,7 @@ function WorkOrdersPage() {
               </tbody>
             </table>
           </div>
+            <Paging page={page} size={size} total={total} onPage={setPage} onSize={setSize} />
         )}
       </Panel>
 
