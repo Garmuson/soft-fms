@@ -145,19 +145,24 @@ function DriversPage() {
   }
 
   async function save() {
-    if (!form.staff_no.trim() || !form.full_name.trim()) {
-      toast.error("Staff number and full name are required");
+    if (!cleanText(form.full_name)) {
+      toast.error("Full name is required");
+      return;
+    }
+    const codes = [form.phone, form.licence_number, form.licence_class, form.next_of_kin_phone];
+    if (!codes.every(isSafeCode)) {
+      toast.error("Phone and licence fields contain characters that aren't allowed");
       return;
     }
     setBusy(true);
+    const opt = (v: string, max = 120) => cleanText(v, max) || null;
     const payload = {
-      staff_no: form.staff_no.trim(),
-      full_name: form.full_name.trim(),
-      phone: form.phone || null,
+      full_name: cleanText(form.full_name, 120),
+      phone: opt(form.phone, 30),
       hub_id: Number(form.hub_id),
       is_active: form.is_active,
-      licence_number: form.licence_number || null,
-      licence_class: form.licence_class || null,
+      licence_number: opt(form.licence_number, 40),
+      licence_class: opt(form.licence_class, 10),
       licence_issued: form.licence_issued || null,
       licence_expiry: form.licence_expiry || null,
       certified_types: form.certified_types,
@@ -165,9 +170,9 @@ function DriversPage() {
       medical_check_date: form.medical_check_date || null,
       employment_type: form.employment_type,
       date_joined: form.date_joined || null,
-      next_of_kin_name: form.next_of_kin_name || null,
-      next_of_kin_phone: form.next_of_kin_phone || null,
-      notes: form.notes || null,
+      next_of_kin_name: opt(form.next_of_kin_name),
+      next_of_kin_phone: opt(form.next_of_kin_phone, 30),
+      notes: opt(form.notes, 1000),
     };
     const res = editing
       ? await supabase.from("drivers").update(payload).eq("id", editing.id)
