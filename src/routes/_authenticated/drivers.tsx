@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Download, Plus, X } from "lucide-react";
-import { driversQuery, hubsQuery, type Driver } from "@/lib/api";
+import { hubsQuery, type Driver } from "@/lib/api";
+import { Paging, pageRange } from "@/components/Paging";
+import { cleanSearch, cleanText, isSafeCode } from "@/lib/sanitize";
+import { useDebounced } from "@/hooks/use-debounced";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -84,23 +87,32 @@ function DriversPage() {
   const scope = national ? (hubFilter === "" ? null : hubFilter) : (hubId ?? null);
 
   const { data: hubs = [] } = useQuery(hubsQuery());
-  const { data: drivers = [], isLoading } = useQuery(driversQuery(scope));
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(25);
+  const term = cleanSearch(useDebounced(search, 300));
+  const listQ = useQuery({
+    queryKey: ["drivers", "page", scope ?? "all", term, page, size],
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const [from, to] = pageRange(page, size);
+      let q = supabase.from("drivers").select("*", { count: "exact" }).order("full_name").range(from, to);
+      if (scope) q = q.eq("hub_id", scope);
+      if (term)
+        q = q.or(`full_name.ilike.%${term}%,staff_no.ilike.%${term}%,licence_number.ilike.%${term}%`);
+      const { data, count, error } = await q;
+      if (error) throw new Error(error.message);
+      return { rows: (data ?? []) as Driver[], total: count ?? 0 };
+    },
+  });
+  const isLoading = listQ.isLoading;
+  const rows = listQ.data?.rows ?? [];
+  const total = listQ.data?.total ?? 0;
   const [editing, setEditing] = useState<Driver | null>(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ ...EMPTY, hub_id: hubId ?? 1 });
   const [busy, setBusy] = useState(false);
-
-  const rows = useMemo(() => {
-    const t = search.trim().toLowerCase();
-    if (!t) return drivers;
-    return drivers.filter(
-      (d) =>
-        d.full_name.toLowerCase().includes(t) ||
-        d.staff_no.toLowerCase().includes(t) ||
-        (d.licence_number ?? "").toLowerCase().includes(t),
-    );
-  }, [drivers, search]);
+  useEffect(() => setPage(0), [term, scope]);
 
   function startNew() {
     setEditing(null);
@@ -133,19 +145,24 @@ function DriversPage() {
   }
 
   async function save() {
-    if (!form.staff_no.trim() || !form.full_name.trim()) {
-      toast.error("Staff number and full name are required");
+    if (!cleanText(form.full_name)) {
+      toast.error("Full name is required");
+      return;
+    }
+    const codes = [form.phone, form.licence_number, form.licence_class, form.next_of_kin_phone];
+    if (!codes.every(isSafeCode)) {
+      toast.error("Phone and licence fields contain characters that aren't allowed");
       return;
     }
     setBusy(true);
+    const opt = (v: string, max = 120) => cleanText(v, max) || null;
     const payload = {
-      staff_no: form.staff_no.trim(),
-      full_name: form.full_name.trim(),
-      phone: form.phone || null,
+      full_name: cleanText(form.full_name, 120),
+      phone: opt(form.phone, 30),
       hub_id: Number(form.hub_id),
       is_active: form.is_active,
-      licence_number: form.licence_number || null,
-      licence_class: form.licence_class || null,
+      licence_number: opt(form.licence_number, 40),
+      licence_class: opt(form.licence_class, 10),
       licence_issued: form.licence_issued || null,
       licence_expiry: form.licence_expiry || null,
       certified_types: form.certified_types,
@@ -153,14 +170,15 @@ function DriversPage() {
       medical_check_date: form.medical_check_date || null,
       employment_type: form.employment_type,
       date_joined: form.date_joined || null,
-      next_of_kin_name: form.next_of_kin_name || null,
-      next_of_kin_phone: form.next_of_kin_phone || null,
-      notes: form.notes || null,
+      next_of_kin_name: opt(form.next_of_kin_name),
+      next_of_kin_phone: opt(form.next_of_kin_phone, 30),
+      notes: opt(form.notes, 1000),
     };
     const res = editing
       ? await supabase.from("drivers").update(payload).eq("id", editing.id)
       : await supabase.from("drivers").insert({
           ...payload,
+          staff_no: "",
           created_by: profile?.id ?? null,
           review_status: needsReview ? "pending" : "approved",
         });
@@ -230,7 +248,7 @@ function DriversPage() {
     <>
       <PageHeader
         title="Driver Registry"
-        subtitle={`${rows.length} driver${rows.length === 1 ? "" : "s"}${scope ? ` · Hub ${scope}` : " · all hubs"}`}
+        subtitle={`${total} driver${total === 1 ? "" : "s"}${scope ? ` · Hub ${scope}` : " · all hubs"}`}
       />
 
       <Panel>
@@ -356,6 +374,7 @@ function DriversPage() {
             })}
           </tbody>
         </table>
+        <Paging page={page} size={size} total={total} onPage={setPage} onSize={setSize} />
       </Panel>
 
       {open && canEdit && (
@@ -373,9 +392,17 @@ function DriversPage() {
               </p>
             )}
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="block text-[11px] text-muted-foreground">
+                Staff number
+                <input
+                  className={`${inputCls} cursor-not-allowed opacity-70`}
+                  value={editing ? form.staff_no : "Assigned automatically (DRV-####)"}
+                  readOnly
+                  disabled
+                />
+              </label>
               {(
                 [
-                  ["staff_no", "Staff number", "text"],
                   ["full_name", "Full name", "text"],
                   ["phone", "Phone", "tel"],
                   ["licence_number", "Licence number", "text"],

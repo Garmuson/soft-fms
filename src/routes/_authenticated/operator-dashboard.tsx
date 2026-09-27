@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, Fuel, Play, Truck } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, Clock, Fuel, Loader2, Square, Truck } from "lucide-react";
 import { myMachinesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { EmptyState, PageHeader, Panel, SkeletonCards, StatusBadge, btn } from "@/components/kit";
@@ -60,23 +61,60 @@ function OperatorHome() {
   const qc = useQueryClient();
   const machinesQ = useQuery(myMachinesQuery(profile?.id));
 
+  const shiftQ = useQuery({
+    queryKey: ["active-shift", profile?.id],
+    enabled: !!profile?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("shifts")
+        .select("id, machine_id, started_at")
+        .eq("operator_id", profile!.id)
+        .is("ended_at", null)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data;
+    },
+  });
+  const active = shiftQ.data ?? null;
+  const [pending, setPending] = useState<string | null>(null);
+
   async function startShift(id: string) {
+    if (!profile) return;
+    const m = (machinesQ.data ?? []).find((x) => x.id === id);
+    if (!m) return;
+    setPending(id);
     const { error } = await supabase
-      .from("machines")
-      .update({ status: "active" as const, ignition_on: true })
-      .eq("id", id);
-    if (error) toast.error("Could not start shift", { description: error.message });
-    else {
-      toast.success("Shift started");
-      const m = (machinesQ.data ?? []).find((x) => x.id === id);
-      void logAudit(profile, {
-        action: "started shift",
-        entity: "machine",
-        entity_ref: m?.unit_id ?? null,
-        hub_id: m?.hub_id ?? null,
-      });
-      qc.invalidateQueries({ queryKey: ["my-machines"] });
+      .from("shifts")
+      .insert({ operator_id: profile.id, machine_id: id, hub_id: m.hub_id });
+    if (!error) {
+      await supabase.from("machines").update({ status: "active" as const, ignition_on: true }).eq("id", id);
     }
+    await shiftQ.refetch();
+    setPending(null);
+    if (error) {
+      toast.error("Could not start shift", { description: error.message });
+      return;
+    }
+    toast.success("Shift started");
+    void logAudit(profile, { action: "started shift", entity: "machine", entity_ref: m.unit_id, hub_id: m.hub_id });
+    qc.invalidateQueries({ queryKey: ["my-machines"] });
+  }
+
+  async function endShift() {
+    if (!active || !profile) return;
+    setPending(active.machine_id);
+    const m = (machinesQ.data ?? []).find((x) => x.id === active.machine_id);
+    const { error } = await supabase.from("shifts").update({ ended_at: new Date().toISOString() }).eq("id", active.id);
+    if (!error) await supabase.from("machines").update({ status: "idle" as const, ignition_on: false }).eq("id", active.machine_id);
+    await shiftQ.refetch();
+    setPending(null);
+    if (error) {
+      toast.error("Could not end shift", { description: error.message });
+      return;
+    }
+    toast.success("Shift ended");
+    void logAudit(profile, { action: "ended shift", entity: "machine", entity_ref: m?.unit_id ?? null, hub_id: m?.hub_id ?? null });
+    qc.invalidateQueries({ queryKey: ["my-machines"] });
   }
 
   const machines = machinesQ.data ?? [];
@@ -104,8 +142,9 @@ function OperatorHome() {
                 <div>
                   <p className="num text-xl font-semibold">{m.unit_id}</p>
                   <p className="text-xs text-muted-foreground">{typeLabel(m.type)}</p>
-                  <div className="mt-1.5">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                     <StatusBadge status={m.status} />
+                    {active?.machine_id === m.id && <ShiftPill />}
                   </div>
                   <p className="num mt-1.5 text-[11px] text-muted-foreground">
                     {m.engine_hours_today} h today
@@ -114,12 +153,14 @@ function OperatorHome() {
                 <Gauge pct={m.fuel_level} />
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                <button
-                  className={`${btn.primary} h-11 justify-center`}
-                  onClick={() => startShift(m.id)}
-                >
-                  <Play className="size-4" aria-hidden /> Start Shift
-                </button>
+                <ShiftControl
+                  machineId={m.id}
+                  active={active}
+                  pending={pending === m.id}
+                  loading={shiftQ.isLoading}
+                  onStart={() => startShift(m.id)}
+                  onEnd={endShift}
+                />
                 <Link to="/fuel-entry" className={`${btn.secondary} h-11 justify-center`}>
                   <Fuel className="size-4" aria-hidden /> Log Fuel
                 </Link>
@@ -132,5 +173,66 @@ function OperatorHome() {
         </div>
       )}
     </>
+  );
+}
+
+function ShiftPill() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-teal/50 bg-green-dim px-2 py-0.5 text-[11px] font-medium text-teal">
+      <span className="relative flex size-2">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal opacity-75" />
+        <span className="relative inline-flex size-2 rounded-full bg-teal" />
+      </span>
+      Shift Active
+    </span>
+  );
+}
+
+function ShiftControl({
+  machineId,
+  active,
+  pending,
+  loading,
+  onStart,
+  onEnd,
+}: {
+  machineId: string;
+  active: { machine_id: string; started_at: string } | null;
+  pending: boolean;
+  loading: boolean;
+  onStart: () => void;
+  onEnd: () => void;
+}) {
+  if (active?.machine_id === machineId) {
+    return (
+      <div className="flex flex-col items-start gap-1">
+        <div className="flex w-full items-center gap-2">
+          <ShiftPill />
+          <button
+            className={`${btn.danger} h-9 flex-1 justify-center`}
+            onClick={onEnd}
+            disabled={pending}
+          >
+            {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Square className="size-3.5" aria-hidden />}
+            {pending ? "Ending..." : "End Shift"}
+          </button>
+        </div>
+        <span className="num text-[11px] text-muted-foreground">
+          Started at {new Date(active.started_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        </span>
+      </div>
+    );
+  }
+  const otherActive = !!active;
+  return (
+    <button
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-teal px-3 text-sm font-semibold text-background transition-opacity disabled:opacity-50"
+      onClick={onStart}
+      disabled={pending || loading || otherActive}
+      title={otherActive ? "End your current shift first" : undefined}
+    >
+      {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Clock className="size-4" aria-hidden />}
+      {pending ? "Starting..." : "Start Shift"}
+    </button>
   );
 }

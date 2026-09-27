@@ -1,4 +1,9 @@
 import "leaflet/dist/leaflet.css";
+import { useState } from "react";
+import L from "leaflet";
+import { useQuery } from "@tanstack/react-query";
+import { X } from "lucide-react";
+import { profilesQuery, projectsQuery } from "@/lib/api";
 import {
   Circle,
   CircleMarker,
@@ -22,6 +27,8 @@ export type MapMachine = {
   last_seen: string;
   operator?: string | null;
   hub_name?: string | null;
+  operator_id?: string | null;
+  current_project_id?: string | null;
 };
 
 export type MapHub = { id: number; name: string; lat_center: number; lng_center: number };
@@ -67,6 +74,14 @@ export default function FleetMap({
   onMapClick?: (lat: number, lng: number) => void;
   onSelect?: (unitId: string) => void;
 }) {
+  const [selId, setSelId] = useState<string | null>(null);
+  const { data: profiles = [] } = useQuery(profilesQuery());
+  const { data: projects = [] } = useQuery(projectsQuery());
+  const sel = machines.find((m) => m.id === selId) ?? null;
+  const opName = (m: MapMachine) =>
+    m.operator ?? profiles.find((p) => p.id === m.operator_id)?.full_name ?? "Unassigned";
+  const projName = (m: MapMachine) =>
+    projects.find((p) => p.id === m.current_project_id)?.name ?? "None";
   return (
     <div className="relative overflow-hidden rounded-lg border border-border" style={{ height }}>
       <MapContainer
@@ -131,7 +146,15 @@ export default function FleetMap({
             <CircleMarker
               key={m.id}
               center={[Number(m.lat), Number(m.lng)]}
-              radius={5}
+              radius={selId === m.id ? 9 : 6}
+              bubblingMouseEvents={false}
+              eventHandlers={{
+                click: (e) => {
+                  L.DomEvent.stopPropagation(e);
+                  e.originalEvent?.stopPropagation();
+                  setSelId(m.id);
+                },
+              }}
               pathOptions={{
                 color: "#F2C200",
                 fillColor: STATUS_HEX[m.status] ?? "#888888",
@@ -139,39 +162,61 @@ export default function FleetMap({
                 weight: 2,
               }}
             >
-              <Popup>
-                <div className="min-w-[180px] space-y-1 text-xs">
-                  <p className="num text-sm font-medium text-foreground">{m.unit_id}</p>
-                  <p className="text-muted-foreground">{typeLabel(m.type)}</p>
-                  <p>
-                    Status: <span style={{ color: STATUS_HEX[m.status] }}>{statusLabel(m.status)}</span>
-                  </p>
-                  {m.hub_name && <p className="text-muted-foreground">{m.hub_name}</p>}
-                  <p className="text-muted-foreground">Operator: {m.operator ?? "Unassigned"}</p>
-                  <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">Fuel</span>
-                    <span className="h-1 w-16 overflow-hidden rounded-sm bg-border">
-                      <span
-                        className="block h-full"
-                        style={{ width: `${m.fuel_level}%`, background: "#2ea043" }}
-                      />
-                    </span>
-                    <span className="num">{m.fuel_level}%</span>
-                  </div>
-                  <p className="num text-muted-foreground">Seen {timeAgo(m.last_seen)}</p>
-                  {onSelect && (
-                    <button
-                      className="mt-1 text-blue underline"
-                      onClick={() => onSelect(m.unit_id)}
-                    >
-                      View details
-                    </button>
-                  )}
-                </div>
-              </Popup>
             </CircleMarker>
           ))}
       </MapContainer>
+      {sel && (
+        <aside
+          className="absolute inset-x-2 bottom-2 z-[600] max-h-[80%] overflow-y-auto rounded-lg border border-border bg-surface p-3 text-xs shadow-lg sm:inset-x-auto sm:bottom-auto sm:right-2 sm:top-2 sm:w-72"
+          aria-label={`Details for ${sel.unit_id}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="num text-sm font-semibold text-gold">{sel.unit_id}</p>
+              <p className="text-muted-foreground">{typeLabel(sel.type)}</p>
+            </div>
+            <button onClick={() => setSelId(null)} aria-label="Close details">
+              <X className="size-4" aria-hidden />
+            </button>
+          </div>
+          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5">
+            <dt className="text-muted-foreground">Status</dt>
+            <dd>
+              <span
+                className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+                style={{ background: `${STATUS_HEX[sel.status] ?? "#888"}33`, color: STATUS_HEX[sel.status] }}
+              >
+                {statusLabel(sel.status)}
+              </span>
+            </dd>
+            <dt className="text-muted-foreground">Operator</dt>
+            <dd>{opName(sel)}</dd>
+            <dt className="text-muted-foreground">Hub</dt>
+            <dd>{sel.hub_name ?? "—"}</dd>
+            <dt className="text-muted-foreground">Project</dt>
+            <dd>{projName(sel)}</dd>
+            <dt className="text-muted-foreground">Fuel</dt>
+            <dd className="flex items-center gap-2">
+              <span className="h-1.5 w-20 overflow-hidden rounded-sm bg-border">
+                <span className="block h-full" style={{ width: `${sel.fuel_level}%`, background: sel.fuel_level < 25 ? "#da3633" : "#2ea043" }} />
+              </span>
+              <span className="num">{sel.fuel_level}%</span>
+            </dd>
+            <dt className="text-muted-foreground">Last seen</dt>
+            <dd className="num">{new Date(sel.last_seen).toLocaleString()} ({timeAgo(sel.last_seen)})</dd>
+            <dt className="text-muted-foreground">GPS</dt>
+            <dd className="num">
+              {Number(sel.lat).toFixed(5)}, {Number(sel.lng).toFixed(5)}
+            </dd>
+          </dl>
+          {onSelect && (
+            <button className="mt-3 text-blue underline" onClick={() => onSelect(sel.unit_id)}>
+              Open full machine record
+            </button>
+          )}
+        </aside>
+      )}
       <div className="pointer-events-none absolute bottom-2 right-2 z-[500] rounded-md border border-border bg-surface/95 px-2 py-1.5 text-[10px]">
         {["active", "idle", "alert", "maintenance", "offline"].map((s) => (
           <div key={s} className="flex items-center gap-1.5">

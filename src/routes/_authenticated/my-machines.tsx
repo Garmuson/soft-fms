@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Fragment, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Fragment, useEffect, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ChevronDown, ChevronRight, Truck } from "lucide-react";
-import { alertsQuery, fuelLogsQuery, machinesQuery } from "@/lib/api";
+import { alertsQuery, fuelLogsQuery, profilesQuery, type Machine } from "@/lib/api";
+import { Paging, pageRange } from "@/components/Paging";
+import { cleanSearch } from "@/lib/sanitize";
+import { useDebounced } from "@/hooks/use-debounced";
 import { supabase } from "@/integrations/supabase/client";
 import {
   EmptyState,
@@ -17,7 +20,7 @@ import {
 } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { useAuth } from "@/hooks/use-auth";
-import { MACHINE_STATUSES, fmtDateTime, timeAgo, typeLabel } from "@/lib/fleet";
+import { MACHINE_STATUSES, MACHINE_TYPES, fmtDateTime, statusLabel, timeAgo, typeLabel } from "@/lib/fleet";
 
 export const Route = createFileRoute("/_authenticated/my-machines")({
   head: () => ({
@@ -42,7 +45,41 @@ function MyMachinesPage() {
   const { hubId } = useAuth();
   const qc = useQueryClient();
   const [open, setOpen] = useState<string | null>(null);
-  const machinesQ = useQuery(machinesQuery(hubId));
+  const [fStatus, setFStatus] = useState("");
+  const [fType, setFType] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(25);
+  const term = cleanSearch(useDebounced(search, 300));
+  useEffect(() => setPage(0), [fStatus, fType, term]);
+  const { data: profiles = [] } = useQuery(profilesQuery());
+  const machinesQ = useQuery({
+    queryKey: ["machines", "hub-page", hubId, fStatus, fType, term, page, size],
+    enabled: !!hubId,
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const [from, to] = pageRange(page, size);
+      let q = supabase
+        .from("machines")
+        .select("*", { count: "exact" })
+        .eq("hub_id", hubId!)
+        .order("unit_id")
+        .range(from, to);
+      if (fStatus) q = q.eq("status", fStatus as "active");
+      if (fType) q = q.eq("type", fType as "excavator");
+      if (term) {
+        const { data: ops } = await supabase.from("profiles").select("id").ilike("full_name", `%${term}%`);
+        const ids = (ops ?? []).map((o) => o.id);
+        q = ids.length
+          ? q.or(`unit_id.ilike.%${term}%,operator_id.in.(${ids.join(",")})`)
+          : q.ilike("unit_id", `%${term}%`);
+      }
+      const { data, count, error } = await q;
+      if (error) throw new Error(error.message);
+      return { rows: (data ?? []) as Machine[], total: count ?? 0 };
+    },
+  });
+  const opName = (id: string | null) => profiles.find((p) => p.id === id)?.full_name ?? "Unassigned";
   const { data: fuel = [] } = useQuery(fuelLogsQuery(hubId));
   const { data: alerts = [] } = useQuery(alertsQuery(hubId));
 
@@ -58,26 +95,53 @@ function MyMachinesPage() {
     }
   }
 
-  const machines = machinesQ.data ?? [];
+  const machines = machinesQ.data?.rows ?? [];
+  const total = machinesQ.data?.total ?? 0;
 
   return (
     <>
-      <PageHeader title="My Machines" subtitle={`${machines.length} machines in your hub`} />
+      <PageHeader title="My Machines" subtitle={`${total} machines match`} />
+      <Panel className="mb-3">
+        <div className="grid gap-2 sm:grid-cols-3">
+          <label className="text-[11px] text-muted-foreground">
+            Status
+            <select className={inputCls} value={fStatus} onChange={(e) => setFStatus(e.target.value)}>
+              <option value="">All</option>
+              {MACHINE_STATUSES.map((s) => (
+                <option key={s} value={s}>{statusLabel(s)}</option>
+              ))}
+            </select>
+          </label>
+          <label className="text-[11px] text-muted-foreground">
+            Machine type
+            <select className={inputCls} value={fType} onChange={(e) => setFType(e.target.value)}>
+              <option value="">All</option>
+              {MACHINE_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </label>
+          <label className="text-[11px] text-muted-foreground">
+            Search
+            <input className={inputCls} placeholder="Unit ID or operator name" value={search} maxLength={60} onChange={(e) => setSearch(e.target.value)} />
+          </label>
+        </div>
+      </Panel>
       <Panel className="overflow-hidden">
         {machinesQ.isLoading ? (
           <SkeletonTable rows={10} cols={7} />
         ) : machines.length === 0 ? (
           <EmptyState
             icon={<Truck className="size-4" />}
-            title="No machines in your hub"
-            message="Ask HQ to assign machines to this hub."
+            title="No machines match"
+            message="Try clearing a filter or search term."
           />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="text-left text-muted-foreground">
                 <tr className="border-b border-border">
-                  {["", "Unit ID", "Type", "Status", "Fuel", "Hours Today", "Last Seen"].map((h) => (
+                  {["", "Unit ID", "Type", "Operator", "Status", "Fuel", "Hours Today", "Last Seen"].map((h) => (
                     <th key={h} className="px-2 py-2 font-medium">
                       {h}
                     </th>
@@ -110,6 +174,7 @@ function MyMachinesPage() {
                         </td>
                         <td className="num px-2 py-2">{m.unit_id}</td>
                         <td className="px-2 py-2">{typeLabel(m.type)}</td>
+                        <td className="px-2 py-2">{opName(m.operator_id)}</td>
                         <td className="px-2 py-2">
                           <select
                             className={`${inputCls} max-w-32`}
@@ -132,7 +197,7 @@ function MyMachinesPage() {
                       </tr>
                       {isOpen && (
                         <tr className="border-b border-border bg-background/60">
-                          <td colSpan={7} className="px-4 py-3">
+                          <td colSpan={8} className="px-4 py-3">
                             <div className="grid gap-4 md:grid-cols-3">
                               <div>
                                 <p className="mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -198,6 +263,7 @@ function MyMachinesPage() {
                 })}
               </tbody>
             </table>
+            <Paging page={page} size={size} total={total} onPage={setPage} onSize={setSize} />
           </div>
         )}
       </Panel>
