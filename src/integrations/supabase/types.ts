@@ -212,10 +212,12 @@ export type Database = {
           id: string
           machine_id: string
           notes: string | null
+          project_id: string | null
           review_status: Database["public"]["Enums"]["entry_status"]
           reviewed_at: string | null
           reviewed_by: string | null
           shift: string
+          status: string
           unassigned_at: string | null
         }
         Insert: {
@@ -227,10 +229,12 @@ export type Database = {
           id?: string
           machine_id: string
           notes?: string | null
+          project_id?: string | null
           review_status?: Database["public"]["Enums"]["entry_status"]
           reviewed_at?: string | null
           reviewed_by?: string | null
           shift?: string
+          status?: string
           unassigned_at?: string | null
         }
         Update: {
@@ -242,10 +246,12 @@ export type Database = {
           id?: string
           machine_id?: string
           notes?: string | null
+          project_id?: string | null
           review_status?: Database["public"]["Enums"]["entry_status"]
           reviewed_at?: string | null
           reviewed_by?: string | null
           shift?: string
+          status?: string
           unassigned_at?: string | null
         }
         Relationships: [
@@ -275,6 +281,13 @@ export type Database = {
             columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "driver_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -338,7 +351,7 @@ export type Database = {
           review_status?: Database["public"]["Enums"]["entry_status"]
           reviewed_at?: string | null
           reviewed_by?: string | null
-          staff_no: string
+          staff_no?: string
           supervisor_id?: string | null
           training_date?: string | null
           updated_at?: string
@@ -1067,6 +1080,58 @@ export type Database = {
             columns: ["hub_id"]
             isOneToOne: false
             referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shifts: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          hub_id: number
+          id: string
+          machine_id: string
+          operator_id: string
+          started_at: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          hub_id: number
+          id?: string
+          machine_id: string
+          operator_id: string
+          started_at?: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          hub_id?: number
+          id?: string
+          machine_id?: string
+          operator_id?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shifts_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shifts_machine_id_fkey"
+            columns: ["machine_id"]
+            isOneToOne: false
+            referencedRelation: "machines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shifts_operator_id_fkey"
+            columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
