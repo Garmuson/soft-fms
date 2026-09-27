@@ -240,8 +240,8 @@ function WorkOrdersPage() {
                 ))}
               </tbody>
             </table>
-          </div>
             <Paging page={page} size={size} total={total} onPage={setPage} onSize={setSize} />
+          </div>
         )}
       </Panel>
 
