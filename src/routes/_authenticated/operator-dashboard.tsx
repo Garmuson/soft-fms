@@ -209,7 +209,7 @@ function ShiftControl({
         <div className="flex w-full items-center gap-2">
           <ShiftPill />
           <button
-            className={`${btn.danger ?? btn.secondary} h-9 flex-1 justify-center`}
+            className={`${btn.danger} h-9 flex-1 justify-center`}
             onClick={onEnd}
             disabled={pending}
           >
