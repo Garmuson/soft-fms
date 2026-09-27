@@ -139,6 +139,13 @@ function RootComponent() {
     return () => sub.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  useEffect(() => {
+    if (!import.meta.env.PROD) return;
+    const block = (e: MouseEvent) => e.preventDefault();
+    document.addEventListener("contextmenu", block);
+    return () => document.removeEventListener("contextmenu", block);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
