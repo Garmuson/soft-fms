@@ -21,15 +21,15 @@ import { cleanText } from "@/lib/sanitize";
 import { ENTRY_STATUS_LABEL, entryStatusClasses, statusLabel, typeLabel } from "@/lib/fleet";
 
 type Search = {
-  driver?: string;
-  machine?: string;
-  hub?: number;
-  shift?: string;
-  from?: string;
-  to?: string;
-  status?: string;
-  page?: number;
-  size?: number;
+  driver?: string | undefined;
+  machine?: string | undefined;
+  hub?: number | undefined;
+  shift?: string | undefined;
+  from?: string | undefined;
+  to?: string | undefined;
+  status?: string | undefined;
+  page?: number | undefined;
+  size?: number | undefined;
 };
 
 const str = (v: unknown) => (typeof v === "string" && v.length < 64 ? v : undefined);
@@ -268,7 +268,7 @@ function AssignmentsPage() {
             <select className={inputCls} value={sp.shift ?? ""} onChange={(e) => setSearch({ shift: e.target.value || undefined })}>
               <option value="">All</option>
               {SHIFT_OPTS.map((s) => (
-                <option key={s} value={s} className="capitalize">{s[0].toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="capitalize">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
           </label>
@@ -418,7 +418,7 @@ function AssignmentsPage() {
                 Shift
                 <select className={inputCls} value={form.shift} onChange={(e) => setForm({ ...form, shift: e.target.value })}>
                   {SHIFT_OPTS.map((s) => (
-                    <option key={s} value={s}>{s[0].toUpperCase() + s.slice(1)}</option>
+                    <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                   ))}
                 </select>
               </label>
