@@ -178,6 +178,7 @@ function DriversPage() {
       ? await supabase.from("drivers").update(payload).eq("id", editing.id)
       : await supabase.from("drivers").insert({
           ...payload,
+          staff_no: "",
           created_by: profile?.id ?? null,
           review_status: needsReview ? "pending" : "approved",
         });
@@ -247,7 +248,7 @@ function DriversPage() {
     <>
       <PageHeader
         title="Driver Registry"
-        subtitle={`${rows.length} driver${rows.length === 1 ? "" : "s"}${scope ? ` · Hub ${scope}` : " · all hubs"}`}
+        subtitle={`${total} driver${total === 1 ? "" : "s"}${scope ? ` · Hub ${scope}` : " · all hubs"}`}
       />
 
       <Panel>
@@ -373,6 +374,7 @@ function DriversPage() {
             })}
           </tbody>
         </table>
+        <Paging page={page} size={size} total={total} onPage={setPage} onSize={setSize} />
       </Panel>
 
       {open && canEdit && (
@@ -390,9 +392,17 @@ function DriversPage() {
               </p>
             )}
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="block text-[11px] text-muted-foreground">
+                Staff number
+                <input
+                  className={`${inputCls} cursor-not-allowed opacity-70`}
+                  value={editing ? form.staff_no : "Assigned automatically (DRV-####)"}
+                  readOnly
+                  disabled
+                />
+              </label>
               {(
                 [
-                  ["staff_no", "Staff number", "text"],
                   ["full_name", "Full name", "text"],
                   ["phone", "Phone", "tel"],
                   ["licence_number", "Licence number", "text"],
