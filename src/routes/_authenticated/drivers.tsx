@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Download, Plus, X } from "lucide-react";
-import { driversQuery, hubsQuery, type Driver } from "@/lib/api";
+import { hubsQuery, type Driver } from "@/lib/api";
+import { Paging, pageRange } from "@/components/Paging";
+import { cleanSearch, cleanText, isSafeCode } from "@/lib/sanitize";
+import { useDebounced } from "@/hooks/use-debounced";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -84,23 +87,32 @@ function DriversPage() {
   const scope = national ? (hubFilter === "" ? null : hubFilter) : (hubId ?? null);
 
   const { data: hubs = [] } = useQuery(hubsQuery());
-  const { data: drivers = [], isLoading } = useQuery(driversQuery(scope));
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(25);
+  const term = cleanSearch(useDebounced(search, 300));
+  const listQ = useQuery({
+    queryKey: ["drivers", "page", scope ?? "all", term, page, size],
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const [from, to] = pageRange(page, size);
+      let q = supabase.from("drivers").select("*", { count: "exact" }).order("full_name").range(from, to);
+      if (scope) q = q.eq("hub_id", scope);
+      if (term)
+        q = q.or(`full_name.ilike.%${term}%,staff_no.ilike.%${term}%,licence_number.ilike.%${term}%`);
+      const { data, count, error } = await q;
+      if (error) throw new Error(error.message);
+      return { rows: (data ?? []) as Driver[], total: count ?? 0 };
+    },
+  });
+  const isLoading = listQ.isLoading;
+  const rows = listQ.data?.rows ?? [];
+  const total = listQ.data?.total ?? 0;
   const [editing, setEditing] = useState<Driver | null>(null);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ ...EMPTY, hub_id: hubId ?? 1 });
   const [busy, setBusy] = useState(false);
-
-  const rows = useMemo(() => {
-    const t = search.trim().toLowerCase();
-    if (!t) return drivers;
-    return drivers.filter(
-      (d) =>
-        d.full_name.toLowerCase().includes(t) ||
-        d.staff_no.toLowerCase().includes(t) ||
-        (d.licence_number ?? "").toLowerCase().includes(t),
-    );
-  }, [drivers, search]);
+  useEffect(() => setPage(0), [term, scope]);
 
   function startNew() {
     setEditing(null);
