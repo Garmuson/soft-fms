@@ -15,7 +15,37 @@ export type Hub = {
   machine_count: number;
   lat_center: number;
   lng_center: number;
+  tank_capacity_gal: number;
+  tank_current_stock_gal: number;
+  tank_reorder_level_gal: number;
 };
+
+export const LITRES_PER_GAL = 3.78541;
+
+export type HubFuelDelivery = {
+  id: string;
+  hub_id: number;
+  waybill_number: string;
+  supplier_name: string;
+  volume_gal: number;
+  unit_cost_usd: number;
+  total_cost_usd: number;
+  dipstick_before_gal: number | null;
+  dipstick_after_gal: number | null;
+  received_at: string;
+  notes: string | null;
+};
+
+export const hubDeliveriesQuery = (hubId?: number | null) =>
+  queryOptions({
+    queryKey: ["hub_fuel_deliveries", hubId ?? "all"],
+    staleTime: 60_000,
+    queryFn: () => {
+      let q = supabase.from("hub_fuel_deliveries").select("*").order("received_at", { ascending: false }).limit(1000);
+      if (hubId) q = q.eq("hub_id", hubId);
+      return unwrap<HubFuelDelivery[]>(q);
+    },
+  });
 
 export type Machine = {
   id: string;
