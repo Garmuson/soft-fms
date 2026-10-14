@@ -143,6 +143,8 @@ export function HubOverview({ hubId, isSupervisorHome = false }: { hubId: number
         <KpiCard label="Active Alerts" value={openAlerts.length} accent="red" loading={alertsQ.isLoading} />
       </div>
 
+      {hub && <HubFuelPanel hub={hub} />}
+
       <div className="mt-4 grid gap-4 lg:grid-cols-[3fr_2fr]">
         <div className="space-y-4">
           <Panel title="Hub Map">
@@ -265,8 +267,6 @@ export function HubOverview({ hubId, isSupervisorHome = false }: { hubId: number
           </Panel>
         </div>
       </div>
-
-      {hub && <HubFuelPanel hub={hub} />}
 
       <Panel title="Machine Register" className="mt-4">
         {machinesQ.isLoading ? (
