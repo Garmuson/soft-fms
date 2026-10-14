@@ -139,7 +139,7 @@ export function HubFuelPanel({ hub }: { hub: Hub }) {
                 <CartesianGrid stroke="var(--cat-iron)" />
                 <XAxis dataKey="date" tick={{ fontSize: 10, fill: "var(--cat-white)" }} />
                 <YAxis tick={{ fontSize: 10, fill: "var(--cat-white)" }} domain={[0, Math.ceil(cap)]} />
-                <Tooltip formatter={(v: number) => gal(v)} contentStyle={{ background: "var(--cat-steel)", border: "1px solid var(--cat-yellow)", fontSize: 11 }} />
+                <Tooltip formatter={(v) => gal(Number(v))} contentStyle={{ background: "var(--cat-steel)", border: "1px solid var(--cat-yellow)", fontSize: 11 }} />
                 <Area type="stepAfter" dataKey="stock" name="Tank level" stroke="var(--cat-yellow)" fill="var(--cat-yellow-dim)" />
               </AreaChart>
             </ResponsiveContainer>
