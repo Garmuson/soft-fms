@@ -268,8 +268,6 @@ export function HubOverview({ hubId, isSupervisorHome = false }: { hubId: number
         </div>
       </div>
 
-      {hub && <HubFuelPanel hub={hub} />}
-
       <Panel title="Machine Register" className="mt-4">
         {machinesQ.isLoading ? (
           <SkeletonTable rows={10} cols={7} />
