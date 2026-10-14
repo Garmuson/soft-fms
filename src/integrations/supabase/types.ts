@@ -626,6 +626,69 @@ export type Database = {
           },
         ]
       }
+      hub_fuel_deliveries: {
+        Row: {
+          created_at: string
+          dipstick_after_gal: number | null
+          dipstick_before_gal: number | null
+          hub_id: number
+          id: string
+          notes: string | null
+          received_at: string
+          received_by: string | null
+          supplier_name: string
+          total_cost_usd: number
+          unit_cost_usd: number
+          volume_gal: number
+          waybill_number: string
+        }
+        Insert: {
+          created_at?: string
+          dipstick_after_gal?: number | null
+          dipstick_before_gal?: number | null
+          hub_id: number
+          id?: string
+          notes?: string | null
+          received_at?: string
+          received_by?: string | null
+          supplier_name: string
+          total_cost_usd?: number
+          unit_cost_usd?: number
+          volume_gal: number
+          waybill_number: string
+        }
+        Update: {
+          created_at?: string
+          dipstick_after_gal?: number | null
+          dipstick_before_gal?: number | null
+          hub_id?: number
+          id?: string
+          notes?: string | null
+          received_at?: string
+          received_by?: string | null
+          supplier_name?: string
+          total_cost_usd?: number
+          unit_cost_usd?: number
+          volume_gal?: number
+          waybill_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hub_fuel_deliveries_hub_id_fkey"
+            columns: ["hub_id"]
+            isOneToOne: false
+            referencedRelation: "hubs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hub_fuel_deliveries_received_by_fkey"
+            columns: ["received_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hubs: {
         Row: {
           county: string
@@ -636,6 +699,9 @@ export type Database = {
           machine_count: number
           name: string
           supervisor_id: string | null
+          tank_capacity_gal: number
+          tank_current_stock_gal: number
+          tank_reorder_level_gal: number
         }
         Insert: {
           county: string
@@ -646,6 +712,9 @@ export type Database = {
           machine_count?: number
           name: string
           supervisor_id?: string | null
+          tank_capacity_gal?: number
+          tank_current_stock_gal?: number
+          tank_reorder_level_gal?: number
         }
         Update: {
           county?: string
@@ -656,6 +725,9 @@ export type Database = {
           machine_count?: number
           name?: string
           supervisor_id?: string | null
+          tank_capacity_gal?: number
+          tank_current_stock_gal?: number
+          tank_reorder_level_gal?: number
         }
         Relationships: [
           {

@@ -10,7 +10,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { fuelLogsQuery, hubsQuery, machinesQuery } from "@/lib/api";
+import { LITRES_PER_GAL, fuelLogsQuery, hubsQuery, machinesQuery } from "@/lib/api";
+import { hubFuelStatus } from "@/components/HubFuelPanel";
 import { EmptyState, KpiCard, PageHeader, Panel, SkeletonTable } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { MACHINE_TYPES, fmtDateTime, money } from "@/lib/fleet";
@@ -45,7 +46,7 @@ function FuelPage() {
   const monthStart = new Date();
   monthStart.setDate(monthStart.getDate() - 30);
   const monthLogs = logs.filter((l) => new Date(l.logged_at) >= monthStart);
-  const totalVol = monthLogs.reduce((a, l) => a + Number(l.volume_litres), 0);
+  const totalVol = monthLogs.reduce((a, l) => a + Number(l.volume_litres), 0) / LITRES_PER_GAL;
   const totalCost = monthLogs.reduce((a, l) => a + Number(l.cost_usd), 0);
   const avgFuel = machines.length
     ? Math.round(machines.reduce((a, m) => a + m.fuel_level, 0) / machines.length)
@@ -62,7 +63,7 @@ function FuelPage() {
       const d = l.logged_at.slice(5, 10);
       const t = machineById.get(l.machine_id)?.type ?? "other";
       if (!days[d]) days[d] = {};
-      days[d]![t] = (days[d]![t] ?? 0) + Number(l.volume_litres);
+      days[d]![t] = Math.round(((days[d]![t] ?? 0) + Number(l.volume_litres) / LITRES_PER_GAL) * 10) / 10;
     });
     return Object.entries(days).map(([date, v]) => ({ date, ...v }));
   }, [monthLogs, machineById]);
@@ -72,7 +73,7 @@ function FuelPage() {
     const hm = machines.filter((m) => m.hub_id === h.id);
     return {
       ...h,
-      volume: hl.reduce((a, l) => a + Number(l.volume_litres), 0),
+      volume: hl.reduce((a, l) => a + Number(l.volume_litres), 0) / LITRES_PER_GAL,
       cost: hl.reduce((a, l) => a + Number(l.cost_usd), 0),
       avgFuel: hm.length ? Math.round(hm.reduce((a, m) => a + m.fuel_level, 0) / hm.length) : 0,
       anomalies: hl.filter((l) => l.is_flagged).length,
@@ -88,7 +89,7 @@ function FuelPage() {
       <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
         <KpiCard
           label="Fuel This Month"
-          value={`${Math.round(totalVol).toLocaleString()} L`}
+          value={`${Math.round(totalVol).toLocaleString()} gal`}
           accent="gold"
           loading={logsQ.isLoading}
         />
@@ -136,7 +137,7 @@ function FuelPage() {
               <table className="w-full text-xs">
                 <thead className="text-left text-muted-foreground">
                   <tr className="border-b border-border">
-                    {["Hub", "County", "Volume", "Cost", "Avg Fuel", "Anomalies"].map((h) => (
+                    {["Hub", "Depot Stock", "Status", "Used 30d", "Cost", "Anomalies"].map((h) => (
                       <th key={h} className="px-2 py-2 font-medium">
                         {h}
                       </th>
@@ -147,11 +148,11 @@ function FuelPage() {
                   {hubSummary.map((h) => (
                     <tr key={h.id} className="border-b border-border hover:bg-surface-2">
                       <td className="px-2 py-2">{h.name}</td>
-                      <td className="px-2 py-2 text-muted-foreground">{h.county}</td>
-                      <td className="num px-2 py-2">{Math.round(h.volume).toLocaleString()} L</td>
+                      <td className="num px-2 py-2">{Math.round(Number(h.tank_current_stock_gal)).toLocaleString()} / {Math.round(Number(h.tank_capacity_gal)).toLocaleString()} gal</td>
+                      <td className={`px-2 py-2 font-semibold ${hubFuelStatus(Number(h.tank_current_stock_gal), Number(h.tank_capacity_gal), Number(h.tank_reorder_level_gal)).cls}`}>{hubFuelStatus(Number(h.tank_current_stock_gal), Number(h.tank_capacity_gal), Number(h.tank_reorder_level_gal)).label}</td>
+                      <td className="num px-2 py-2">{Math.round(h.volume).toLocaleString()} gal</td>
                       <td className="num px-2 py-2">{money(Math.round(h.cost))}</td>
-                      <td className="num px-2 py-2">{h.avgFuel}%</td>
-                      <td className="num px-2 py-2 text-amber">{h.anomalies || "—"}</td>
+                                            <td className="num px-2 py-2 text-amber">{h.anomalies || "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -174,7 +175,7 @@ function FuelPage() {
                   <p className="text-[11px] text-amber">{f.flag_reason}</p>
                   <p className="num text-[10px] text-muted-foreground">
                     {hubs.find((h) => h.id === f.hub_id)?.name} · {fmtDateTime(f.logged_at)} ·{" "}
-                    {f.volume_litres} L
+                    {(Number(f.volume_litres) / LITRES_PER_GAL).toFixed(1)} gal
                   </p>
                 </li>
               ))}

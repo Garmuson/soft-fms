@@ -19,6 +19,7 @@ import {
 } from "@/components/kit";
 import { MapPanel } from "@/components/MapPanel";
 import { MachineDetailModal } from "@/components/MachineDetailModal";
+import { HubFuelPanel } from "@/components/HubFuelPanel";
 import {
   MACHINE_TYPES,
   fmtDate,
@@ -264,6 +265,8 @@ export function HubOverview({ hubId, isSupervisorHome = false }: { hubId: number
           </Panel>
         </div>
       </div>
+
+      {hub && <HubFuelPanel hub={hub} />}
 
       <Panel title="Machine Register" className="mt-4">
         {machinesQ.isLoading ? (
