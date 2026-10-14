@@ -8,3 +8,4 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+- Hub depot stock (hubs.tank_current_stock_gal) is maintained by DB triggers: deliveries add, fuel_logs inserts subtract (litres→gal); never adjust it from the client. Why: keeps the drawdown ledger tamper-proof.
