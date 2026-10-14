@@ -105,8 +105,8 @@ function FuelPage() {
             <ResponsiveContainer>
               <LineChart data={trend}>
                 <CartesianGrid stroke="var(--cat-iron)" />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "var(--cat-ash)" }} />
-                <YAxis tick={{ fontSize: 10, fill: "var(--cat-ash)" }} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "var(--cat-white)" }} />
+                <YAxis tick={{ fontSize: 10, fill: "var(--cat-white)" }} />
                 <Tooltip
                   contentStyle={{ background: "var(--cat-steel)", border: "1px solid var(--cat-yellow)", fontSize: 11 }}
                 />

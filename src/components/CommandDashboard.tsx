@@ -115,7 +115,7 @@ export function CommandDashboard({ readOnly = false }: { readOnly?: boolean }) {
               <div className="h-24 w-full">
                 <ResponsiveContainer>
                   <BarChart data={topHubs.map((h) => ({ name: h.county, value: h.utilization }))}>
-                    <XAxis dataKey="name" tick={{ fontSize: 8, fill: "var(--cat-ash)" }} hide />
+                    <XAxis dataKey="name" tick={{ fontSize: 8, fill: "var(--cat-white)" }} hide />
                     <Tooltip
                       contentStyle={{
                         background: "var(--cat-steel)",

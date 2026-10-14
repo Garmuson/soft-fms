@@ -94,7 +94,7 @@
   --border: var(--cat-iron);
   --border-hover: var(--cat-ash);
   --foreground: var(--cat-white);
-  --muted-fg: var(--cat-ash);
+  --muted-fg: var(--cat-white);
   --green: #4CAF50;
   --green-hover: #3d8b40;
   --green-dim: #1A3D1A;
@@ -186,9 +186,9 @@
   border-radius: 4px;
 }
 
-/* Keep all neutral text bright white across navigation, tables, forms and overlays. */
+/* All neutral text bright white across navigation, tables, forms and overlays. */
 .text-muted-foreground {
-  color: var(--cat-ash) !important;
+  color: var(--cat-white) !important;
 }
 .text-foreground {
   color: var(--cat-white) !important;
