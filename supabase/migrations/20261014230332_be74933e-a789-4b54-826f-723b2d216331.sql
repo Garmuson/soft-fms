@@ -1,0 +1,2 @@
+UPDATE public.fuel_logs SET logged_at = logged_at + (SELECT (now() - interval '6 hours') - max(logged_at) FROM public.fuel_logs WHERE logged_at < now() - interval '20 days')
+WHERE logged_at < now() - interval '20 days';
