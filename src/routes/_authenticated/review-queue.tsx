@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Check, X } from "lucide-react";
-import { hubsQuery, machinesQuery, pendingEntriesQuery } from "@/lib/api";
+import { LITRES_PER_GAL, hubsQuery, machinesQuery, pendingEntriesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/review-queue")({
         content:
           "Approve or reject fuel, maintenance, driver and assignment records submitted by hub data entry staff.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Review Queue · YM-FMS" },
       {
         property: "og:description",
@@ -161,7 +163,7 @@ function ReviewQueuePage() {
                   </p>
                 </div>
                 <p className="num">
-                  {f.volume_litres} L · ${Number(f.cost_usd).toFixed(2)}
+                  {(Number(f.volume_litres) / LITRES_PER_GAL).toFixed(1)} gal · ${Number(f.cost_usd).toFixed(2)}
                 </p>
                 {f.notes && <p className="text-muted-foreground">{f.notes}</p>}
                 <div className="ml-auto">

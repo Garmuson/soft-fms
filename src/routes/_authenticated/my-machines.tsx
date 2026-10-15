@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ChevronDown, ChevronRight, Truck } from "lucide-react";
-import { alertsQuery, fuelLogsQuery, profilesQuery, type Machine } from "@/lib/api";
+import { LITRES_PER_GAL, alertsQuery, fuelLogsQuery, profilesQuery, type Machine } from "@/lib/api";
 import { Paging, pageRange } from "@/components/Paging";
 import { cleanSearch } from "@/lib/sanitize";
 import { useDebounced } from "@/hooks/use-debounced";
@@ -31,6 +31,8 @@ export const Route = createFileRoute("/_authenticated/my-machines")({
         content: "Machine register for your hub with inline status updates, fuel history and alerts.",
       },
       { property: "og:title", content: "My Machines · YM-FMS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:description", content: "Manage the 15 machines assigned to your hub." },
     ],
   }),
@@ -209,7 +211,7 @@ function MyMachinesPage() {
                                   <ul className="num space-y-0.5 text-[11px]">
                                     {mFuel.map((f) => (
                                       <li key={f.id} className={f.is_flagged ? "text-amber" : ""}>
-                                        {fmtDateTime(f.logged_at)} · {f.volume_litres} L
+                                        {fmtDateTime(f.logged_at)} · {(Number(f.volume_litres) / LITRES_PER_GAL).toFixed(1)} gal
                                       </li>
                                     ))}
                                   </ul>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Fuel, X } from "lucide-react";
-import { fuelLogsQuery, machinesQuery, profilesQuery } from "@/lib/api";
+import { LITRES_PER_GAL, fuelLogsQuery, machinesQuery, profilesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import {
   EmptyState,
@@ -25,6 +25,8 @@ export const Route = createFileRoute("/_authenticated/fuel-log")({
         name: "description",
         content: "Fuel refills logged for your hub in the last 30 days, with anomaly flagging.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Hub Fuel Log · YM-FMS" },
       { property: "og:description", content: "Record and review hub fuel consumption." },
     ],
@@ -43,7 +45,7 @@ function FuelLogPage() {
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState({
     machine_id: "",
-    volume_litres: "",
+    volume_gal: "",
     cost_usd: "",
     fuel_level_before: "40",
     fuel_level_after: "90",
@@ -72,7 +74,7 @@ function FuelLogPage() {
   }
 
   async function add() {
-    if (!form.machine_id || !form.volume_litres || !hubId) {
+    if (!form.machine_id || !(Number(form.volume_gal) > 0 && Number.isFinite(Number(form.volume_gal))) || !hubId) {
       toast.error("Machine and volume are required");
       return;
     }
@@ -80,8 +82,8 @@ function FuelLogPage() {
       machine_id: form.machine_id,
       hub_id: hubId,
       operator_id: profile?.id ?? null,
-      volume_litres: Number(form.volume_litres),
-      cost_usd: Number(form.cost_usd || Number(form.volume_litres) * 0.95),
+      volume_litres: Number(form.volume_gal) * LITRES_PER_GAL,
+      cost_usd: Number(form.cost_usd || Number(form.volume_gal) * LITRES_PER_GAL * 0.95),
       fuel_level_before: Number(form.fuel_level_before),
       fuel_level_after: Number(form.fuel_level_after),
       notes: form.notes || null,
@@ -155,7 +157,7 @@ function FuelLogPage() {
                     <td className="num px-2 py-2">
                       {machines.find((m) => m.id === l.machine_id)?.unit_id ?? "—"}
                     </td>
-                    <td className="num px-2 py-2">{l.volume_litres} L</td>
+                    <td className="num px-2 py-2">{(Number(l.volume_litres) / LITRES_PER_GAL).toFixed(1)} gal</td>
                     <td className="num px-2 py-2">{money(Number(l.cost_usd))}</td>
                     <td className="num px-2 py-2">{l.fuel_level_before}%</td>
                     <td className="num px-2 py-2">{l.fuel_level_after}%</td>
@@ -202,12 +204,12 @@ function FuelLogPage() {
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <label className="block text-[10px] text-muted-foreground">
-                  Volume (litres)
+                  Volume (gal)
                   <input
                     className={inputCls}
                     inputMode="decimal"
-                    value={form.volume_litres}
-                    onChange={(e) => setForm({ ...form, volume_litres: e.target.value })}
+                    value={form.volume_gal}
+                    onChange={(e) => setForm({ ...form, volume_gal: e.target.value })}
                   />
                 </label>
                 <label className="block text-[10px] text-muted-foreground">

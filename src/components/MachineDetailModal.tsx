@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Pause, Play, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  LITRES_PER_GAL,
   alertsQuery,
   fuelLogsQuery,
   gpsRangeQuery,
@@ -216,7 +217,7 @@ export function MachineDetailModal({
                         }
                       >
                         <td className="num px-2 py-2">{fmtDateTime(f.logged_at)}</td>
-                        <td className="num px-2 py-2">{f.volume_litres} L</td>
+                        <td className="num px-2 py-2">{(Number(f.volume_litres) / LITRES_PER_GAL).toFixed(1)} gal</td>
                         <td className="num px-2 py-2">{money(f.cost_usd)}</td>
                         <td className="num px-2 py-2">{f.fuel_level_before}%</td>
                         <td className="num px-2 py-2">{f.fuel_level_after}%</td>

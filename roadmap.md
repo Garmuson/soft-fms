@@ -61,3 +61,7 @@
 - [x] Review queue /review-queue — supervisor approve/reject with audit trail
 - [x] Database guard forces staff entries to "pending" and blocks self-approval
 - [x] Seeded 95 drivers (5 per hub) and current machine assignments
+
+## Gallons-only fuel units
+- [x] Convert remaining fuel entry forms, machine logs, review queue, scorecards and exports to US gallons while preserving depot drawdown.
+- [x] Verify gallon labels and input conversion in the running app (live records read; test submission intercepted to avoid changing stock).
