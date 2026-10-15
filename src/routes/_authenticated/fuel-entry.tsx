@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CheckCircle2, MapPin } from "lucide-react";
-import { myMachinesQuery } from "@/lib/api";
+import { LITRES_PER_GAL, myMachinesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -16,8 +16,10 @@ export const Route = createFileRoute("/_authenticated/fuel-entry")({
     meta: [
       { title: "Fuel Entry · YM-FMS Field" },
       { name: "description", content: "Record a fuel refill from the field with GPS location capture." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Fuel Entry · YM-FMS Field" },
-      { property: "og:description", content: "Log litres, cost and tank levels in seconds." },
+      { property: "og:description", content: "Log gallons, cost and tank levels in seconds." },
     ],
   }),
   component: () => (
@@ -36,7 +38,7 @@ function FuelEntryPage() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [form, setForm] = useState({
     machine_id: "",
-    volume_litres: "",
+    volume_gal: "",
     before: 40,
     after: 90,
     notes: "",
@@ -57,7 +59,7 @@ function FuelEntryPage() {
   }
 
   async function submit() {
-    if (!form.machine_id || !form.volume_litres) {
+    if (!form.machine_id || !(Number(form.volume_gal) > 0 && Number.isFinite(Number(form.volume_gal)))) {
       toast.error("Choose a machine and enter the volume");
       return;
     }
@@ -67,8 +69,8 @@ function FuelEntryPage() {
       machine_id: form.machine_id,
       hub_id: machine?.hub_id ?? hubId ?? 1,
       operator_id: profile?.id ?? null,
-      volume_litres: Number(form.volume_litres),
-      cost_usd: Number(form.volume_litres) * 0.95,
+      volume_litres: Number(form.volume_gal) * LITRES_PER_GAL,
+      cost_usd: Number(form.volume_gal) * LITRES_PER_GAL * 0.95,
       fuel_level_before: form.before,
       fuel_level_after: form.after,
       location_lat: coords?.lat ?? null,
@@ -91,12 +93,12 @@ function FuelEntryPage() {
         entity: "fuel_log",
         entity_ref: machine?.unit_id ?? null,
         hub_id: machine?.hub_id ?? hubId ?? null,
-        detail: `${form.volume_litres} L`,
+        detail: `${form.volume_gal} gal`,
       });
     }
     qc.invalidateQueries({ queryKey: ["fuel_logs"] });
     qc.invalidateQueries({ queryKey: ["my-machines"] });
-    setDone({ unit: machine?.unit_id ?? "", volume: Number(form.volume_litres) });
+    setDone({ unit: machine?.unit_id ?? "", volume: Number(form.volume_gal) });
 
   }
 
@@ -108,12 +110,12 @@ function FuelEntryPage() {
           <div className="flex flex-col items-center gap-3 py-6 text-center">
             <CheckCircle2 className="size-10 text-teal" aria-hidden />
             <p className="num text-lg">{done.unit}</p>
-            <p className="text-sm text-muted-foreground">{done.volume} litres recorded</p>
+            <p className="text-sm text-muted-foreground">{done.volume} gal recorded</p>
             <button
               className={`${btn.primary} h-11`}
               onClick={() => {
                 setDone(null);
-                setForm({ ...form, volume_litres: "", notes: "" });
+                setForm({ ...form, volume_gal: "", notes: "" });
               }}
             >
               Submit another
@@ -145,12 +147,12 @@ function FuelEntryPage() {
           </label>
 
           <label className="block text-[11px] text-muted-foreground">
-            Volume (litres)
+            Volume (gal)
             <input
               className={`${inputCls} num h-14 text-2xl`}
               inputMode="decimal"
-              value={form.volume_litres}
-              onChange={(e) => setForm({ ...form, volume_litres: e.target.value })}
+              value={form.volume_gal}
+              onChange={(e) => setForm({ ...form, volume_gal: e.target.value })}
             />
           </label>
 

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
-import { alertsQuery, fuelLogsQuery, hubsQuery, machinesQuery, projectsQuery } from "@/lib/api";
+import { LITRES_PER_GAL, alertsQuery, fuelLogsQuery, hubsQuery, machinesQuery, projectsQuery } from "@/lib/api";
 import { Bar, PageHeader, Panel, SkeletonTable, btn } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
 import { downloadFile, rollupHubs, toCsv, utilColor } from "@/lib/fleet";
@@ -15,6 +15,8 @@ export const Route = createFileRoute("/_authenticated/scorecards")({
         content:
           "Ranked performance scorecards for all 19 SPPCC hubs: utilization, availability, open alerts and project delivery.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Hub Scorecards · YM-FMS" },
       { property: "og:description", content: "National hub performance ranking against the 80% target." },
     ],
@@ -46,16 +48,16 @@ function ScorecardsPage() {
       const avgProgress = hubProjects.length
         ? Math.round(hubProjects.reduce((a, p) => a + p.progress_pct, 0) / hubProjects.length)
         : 0;
-      const litres = fuel
+      const gallons = fuel
         .filter((f) => f.hub_id === h.id)
-        .reduce((a, f) => a + Number(f.volume_litres), 0);
+        .reduce((a, f) => a + Number(f.volume_litres), 0) / LITRES_PER_GAL;
       const availability = h.total ? Math.round(((h.total - h.maintenance) / h.total) * 100) : 0;
       const alertPenalty = Math.min(20, h.alerts * 2);
       const score = Math.max(
         0,
         Math.round(h.utilization * 0.5 + availability * 0.3 + avgProgress * 0.2 - alertPenalty),
       );
-      return { ...h, avgProgress, litres, availability, score, projects: hubProjects.length };
+      return { ...h, avgProgress, gallons, availability, score, projects: hubProjects.length };
     })
     .sort((a, b) => b.score - a.score);
 
@@ -80,7 +82,7 @@ function ScorecardsPage() {
                     availability_pct: r.availability,
                     project_progress_pct: r.avgProgress,
                     open_alerts: r.alerts,
-                    fuel_litres: Math.round(r.litres),
+                    fuel_gal: Number(r.gallons.toFixed(1)),
                   })),
                 ),
               )
@@ -108,7 +110,7 @@ function ScorecardsPage() {
                     "Availability",
                     "Project progress",
                     "Open alerts",
-                    "Fuel (L)",
+                    "Fuel (gal)",
                   ].map((h) => (
                     <th key={h} className="px-2 py-2 font-medium">
                       {h}
@@ -151,7 +153,7 @@ function ScorecardsPage() {
                       <td className={`num px-2 py-2 ${r.alerts > 0 ? "text-amber" : ""}`}>
                         {r.alerts}
                       </td>
-                      <td className="num px-2 py-2 text-muted-foreground">{Math.round(r.litres)}</td>
+                      <td className="num px-2 py-2 text-muted-foreground">{r.gallons.toFixed(1)}</td>
                     </tr>
                   );
                 })}

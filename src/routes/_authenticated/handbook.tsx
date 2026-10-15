@@ -13,6 +13,8 @@ export const Route = createFileRoute("/_authenticated/handbook")({
         content:
           "Role-by-role guides, training checklist, support contacts and warranty information for the SPPCC fleet system.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "User Handbook & Training · YM-FMS" },
       { property: "og:description", content: "Guides, training checklist and support for YM-FMS users." },
     ],
@@ -48,7 +50,7 @@ const GUIDES: { role: string; steps: string[] }[] = [
       "Sign in on your tablet — you will only see the machines assigned to you.",
       "Press Start Shift on the machine you are operating.",
       "Complete the inspection checklist before and after each shift.",
-      "Record every refuel with the litres and the fuel gauge reading.",
+      "Record every refuel with the gallons and the fuel gauge reading.",
       "Report any breakdown, accident or tampering straight away under Report Issue.",
       "If you lose signal, keep working — entries are held on the tablet and sent when signal returns.",
     ],

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { driversQuery, hubsQuery, machinesQuery, projectsQuery } from "@/lib/api";
+import { LITRES_PER_GAL, driversQuery, hubsQuery, machinesQuery, projectsQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/_authenticated/data-entry")({
         content:
           "Enter real field data for fuel consumption, maintenance and road projects, with supervisor review before it goes live.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Data Entry · YM-FMS" },
       {
         property: "og:description",
@@ -55,7 +57,7 @@ function DataEntryPage() {
   const [fuel, setFuel] = useState({
     machine_id: "",
     driver_id: "",
-    volume_litres: "",
+    volume_gal: "",
     cost_usd: "",
     before: "",
     after: "",
@@ -84,8 +86,8 @@ function DataEntryPage() {
   });
 
   async function saveFuel() {
-    if (!fuel.machine_id || !fuel.volume_litres) {
-      toast.error("Choose a machine and enter the litres");
+    if (!fuel.machine_id || !(Number(fuel.volume_gal) > 0 && Number.isFinite(Number(fuel.volume_gal)))) {
+      toast.error("Choose a machine and enter the gallons");
       return;
     }
     setBusy(true);
@@ -94,8 +96,8 @@ function DataEntryPage() {
       machine_id: fuel.machine_id,
       hub_id: machine?.hub_id ?? scope,
       driver_id: fuel.driver_id || null,
-      volume_litres: Number(fuel.volume_litres),
-      cost_usd: fuel.cost_usd ? Number(fuel.cost_usd) : Number(fuel.volume_litres) * 0.95,
+      volume_litres: Number(fuel.volume_gal) * LITRES_PER_GAL,
+      cost_usd: fuel.cost_usd ? Number(fuel.cost_usd) : Number(fuel.volume_gal) * LITRES_PER_GAL * 0.95,
       fuel_level_before: fuel.before ? Number(fuel.before) : null,
       fuel_level_after: fuel.after ? Number(fuel.after) : null,
       logged_at: new Date(fuel.logged_at).toISOString(),
@@ -113,12 +115,12 @@ function DataEntryPage() {
       entity: "fuel_log",
       entity_ref: machine?.unit_id ?? null,
       hub_id: machine?.hub_id ?? scope,
-      detail: `${fuel.volume_litres} L`,
+      detail: `${fuel.volume_gal} gal`,
     });
     toast.success(needsReview ? "Fuel record sent for review" : "Fuel record saved");
     qc.invalidateQueries({ queryKey: ["fuel_logs"] });
     qc.invalidateQueries({ queryKey: ["pending-entries"] });
-    setFuel({ ...fuel, volume_litres: "", cost_usd: "", before: "", after: "", notes: "" });
+    setFuel({ ...fuel, volume_gal: "", cost_usd: "", before: "", after: "", notes: "" });
   }
 
   async function saveMaint() {
@@ -282,12 +284,12 @@ function DataEntryPage() {
               </select>
             </label>
             <label className="block text-[11px] text-muted-foreground">
-              Litres
+              Volume (gal)
               <input
                 className={`${inputCls} num`}
                 inputMode="decimal"
-                value={fuel.volume_litres}
-                onChange={(e) => setFuel({ ...fuel, volume_litres: e.target.value })}
+                value={fuel.volume_gal}
+                onChange={(e) => setFuel({ ...fuel, volume_gal: e.target.value })}
               />
             </label>
             <label className="block text-[11px] text-muted-foreground">
