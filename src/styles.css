@@ -232,3 +232,39 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 [data-sonner-toast][data-type="warning"] { border-left-color: var(--red) !important; }
 [data-sonner-toast][data-type="error"], [data-sonner-toast][data-type="error"] *,
 [data-sonner-toast][data-type="warning"], [data-sonner-toast][data-type="warning"] * { color: #FF5252 !important; }
+
+/* ===== Mobile-first responsive layer ===== */
+.kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 768px) { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
+
+@media (max-width: 767px) {
+  html, body { overflow-x: hidden; }
+  /* No text below 14px on phones */
+  .text-xs, .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[12px\], .text-\[13px\] { font-size: 14px !important; line-height: 1.35; }
+  /* 44px tap targets, full-width fields, labels above inputs */
+  main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  main select, main textarea, .ym-modal input:not([type="checkbox"]):not([type="radio"]),
+  .ym-modal select, .ym-modal textarea { width: 100%; min-height: 44px; font-size: 16px !important; }
+  main button, .ym-modal button, main a.inline-flex { min-height: 44px; min-width: 44px; }
+  main label { display: block; }
+  main .flex.gap-1, main .flex.gap-1\.5 { gap: 8px; }
+  /* Pop-ups become bottom sheets */
+  .ym-modal { padding: 0 !important; display: flex !important; align-items: flex-end; }
+  .ym-modal > * { width: 100% !important; max-width: none !important; max-height: 94vh; overflow-y: auto;
+    margin: 0 !important; border-radius: 16px 16px 0 0 !important; padding-bottom: calc(1.25rem + env(safe-area-inset-bottom)); }
+  /* Tables become cards */
+  main table { min-width: 0 !important; }
+  main table thead { display: none; }
+  main table, main table tbody, main table tr, main table td { display: block; width: 100%; }
+  main table tbody tr { border: 1px solid var(--cat-iron) !important; border-radius: 10px; margin-bottom: 10px; padding: 8px 10px; background: var(--cat-charcoal) !important; }
+  main table td { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0 !important; text-align: right; border: 0 !important; }
+  main table td[data-label]::before { content: attr(data-label); color: var(--cat-yellow); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; text-align: left; flex-shrink: 0; }
+  main table td[colspan] { justify-content: center; text-align: center; }
+  main table td[colspan]::before { content: none; }
+  /* Field operator: big full-width thumb-reach actions */
+  .op-main button.bg-primary, .op-main button[type="submit"] { width: 100%; min-height: 52px; font-size: 16px !important; justify-content: center; }
+  .op-main form button[type="submit"]:last-of-type { position: sticky; bottom: 76px; z-index: 10; box-shadow: 0 -8px 16px var(--cat-black); }
+  /* Map legend collapses into bottom-left overlay */
+  .leaflet-control-attribution { font-size: 10px !important; max-width: 60vw; }
+}
