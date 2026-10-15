@@ -221,7 +221,9 @@ function DataEntryPage() {
                 ["maintenance", "Maintenance"],
                 ["project", "Projects"],
               ] as const
-            ).map(([k, label]) => (
+            )
+              .filter(([k]) => k !== "project" || role === "hq_admin" || role === "hub_supervisor")
+              .map(([k, label]) => (
               <button
                 key={k}
                 onClick={() => setTab(k)}
