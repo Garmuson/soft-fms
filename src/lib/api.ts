@@ -56,6 +56,7 @@ export type Machine = {
   operator_id: string | null;
   current_project_id: string | null;
   fuel_level: number;
+  tank_capacity_gal?: number;
   engine_hours_today: number;
   engine_hours_lifetime: number;
   lat: number | null;

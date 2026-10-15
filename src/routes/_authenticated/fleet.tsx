@@ -17,6 +17,7 @@ import {
   inputCls,
 } from "@/components/kit";
 import { MachineDetailModal } from "@/components/MachineDetailModal";
+import { AddMachineModal } from "@/components/AddMachineModal";
 import { RoleGate } from "@/components/RoleGate";
 import {
   MACHINE_STATUSES,
@@ -70,6 +71,7 @@ function FleetPage() {
   const qc = useQueryClient();
   const { readOnly } = useAuth();
   const [unit, setUnit] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [sortKey, setSortKey] = useState<"unit_id" | "status" | "fuel_level" | "engine_hours_today">(
     "unit_id",
@@ -174,6 +176,11 @@ function FleetPage() {
         subtitle={`${rows.length} of ${machinesQ.data?.length ?? 0} machines shown`}
         actions={
           <>
+            {!readOnly && (
+              <button className={btn.primary} onClick={() => setAdding(true)}>
+                + Add Machine
+              </button>
+            )}
             <button className={btn.secondary} onClick={exportCsv}>
               Export CSV
             </button>
@@ -365,6 +372,7 @@ function FleetPage() {
       </Panel>
 
       <MachineDetailModal unitId={unit} onClose={() => setUnit(null)} />
+      {adding && <AddMachineModal hubs={hubs} onClose={() => setAdding(false)} />}
     </>
   );
 }
