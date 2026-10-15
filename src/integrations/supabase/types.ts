@@ -862,9 +862,12 @@ export type Database = {
           last_seen: string
           lat: number | null
           lng: number | null
+          model: string | null
           operator_id: string | null
+          serial_number: string | null
           speed_kmh: number
           status: Database["public"]["Enums"]["machine_status"]
+          tank_capacity_gal: number
           type: Database["public"]["Enums"]["machine_type"]
           unit_id: string
         }
@@ -880,9 +883,12 @@ export type Database = {
           last_seen?: string
           lat?: number | null
           lng?: number | null
+          model?: string | null
           operator_id?: string | null
+          serial_number?: string | null
           speed_kmh?: number
           status?: Database["public"]["Enums"]["machine_status"]
+          tank_capacity_gal: number
           type: Database["public"]["Enums"]["machine_type"]
           unit_id: string
         }
@@ -898,9 +904,12 @@ export type Database = {
           last_seen?: string
           lat?: number | null
           lng?: number | null
+          model?: string | null
           operator_id?: string | null
+          serial_number?: string | null
           speed_kmh?: number
           status?: Database["public"]["Enums"]["machine_status"]
+          tank_capacity_gal?: number
           type?: Database["public"]["Enums"]["machine_type"]
           unit_id?: string
         }
