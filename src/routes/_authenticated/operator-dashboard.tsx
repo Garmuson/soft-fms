@@ -67,27 +67,40 @@ function OperatorHome() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("shifts")
-        .select("id, machine_id, started_at")
+        .select("id, machine_id, started_at, start_fuel_pct" as "id, machine_id, started_at")
         .eq("operator_id", profile!.id)
         .is("ended_at", null)
         .maybeSingle();
       if (error) throw new Error(error.message);
-      return data;
+      return data as { id: string; machine_id: string; started_at: string; start_fuel_pct: number | null } | null;
     },
   });
   const active = shiftQ.data ?? null;
   const [pending, setPending] = useState<string | null>(null);
 
+  function askFuel(label: string, initial: number): number | null {
+    const raw = window.prompt(`${label} — tank gauge reading (0–100%)`, String(initial));
+    if (raw === null) return null;
+    const n = Math.round(Number(raw));
+    if (!Number.isFinite(n) || n < 0 || n > 100) {
+      toast.error("Enter a fuel level between 0 and 100%");
+      return null;
+    }
+    return n;
+  }
+
   async function startShift(id: string) {
     if (!profile) return;
     const m = (machinesQ.data ?? []).find((x) => x.id === id);
     if (!m) return;
+    const startPct = askFuel("Starting fuel level", m.fuel_level);
+    if (startPct === null) return;
     setPending(id);
     const { error } = await supabase
       .from("shifts")
-      .insert({ operator_id: profile.id, machine_id: id, hub_id: m.hub_id });
+      .insert({ operator_id: profile.id, machine_id: id, hub_id: m.hub_id, start_fuel_pct: startPct } as never);
     if (!error) {
-      await supabase.from("machines").update({ status: "active" as const, ignition_on: true }).eq("id", id);
+      await supabase.from("machines").update({ status: "active" as const, ignition_on: true, fuel_level: startPct }).eq("id", id);
     }
     await shiftQ.refetch();
     setPending(null);
@@ -95,25 +108,36 @@ function OperatorHome() {
       toast.error("Could not start shift", { description: error.message });
       return;
     }
-    toast.success("Shift started");
-    void logAudit(profile, { action: "started shift", entity: "machine", entity_ref: m.unit_id, hub_id: m.hub_id });
+    toast.success(`Shift started · fuel ${startPct}%`);
+    void logAudit(profile, { action: "started shift", entity: "machine", entity_ref: m.unit_id, hub_id: m.hub_id, detail: `Start fuel ${startPct}%` } as never);
     qc.invalidateQueries({ queryKey: ["my-machines"] });
   }
 
   async function endShift() {
     if (!active || !profile) return;
-    setPending(active.machine_id);
     const m = (machinesQ.data ?? []).find((x) => x.id === active.machine_id);
-    const { error } = await supabase.from("shifts").update({ ended_at: new Date().toISOString() }).eq("id", active.id);
-    if (!error) await supabase.from("machines").update({ status: "idle" as const, ignition_on: false }).eq("id", active.machine_id);
+    const endPct = askFuel("Ending fuel level", m?.fuel_level ?? 50);
+    if (endPct === null) return;
+    setPending(active.machine_id);
+    const { error } = await supabase
+      .from("shifts")
+      .update({ ended_at: new Date().toISOString(), end_fuel_pct: endPct } as never)
+      .eq("id", active.id);
+    if (!error)
+      await supabase
+        .from("machines")
+        .update({ status: "idle" as const, ignition_on: false, fuel_level: endPct })
+        .eq("id", active.machine_id);
     await shiftQ.refetch();
     setPending(null);
     if (error) {
       toast.error("Could not end shift", { description: error.message });
       return;
     }
-    toast.success("Shift ended");
-    void logAudit(profile, { action: "ended shift", entity: "machine", entity_ref: m?.unit_id ?? null, hub_id: m?.hub_id ?? null });
+    const start = active.start_fuel_pct;
+    const used = start != null ? start - endPct : null;
+    toast.success(used != null ? `Shift ended · used ${used}% of tank` : "Shift ended");
+    void logAudit(profile, { action: "ended shift", entity: "machine", entity_ref: m?.unit_id ?? null, hub_id: m?.hub_id ?? null, detail: `End fuel ${endPct}%` } as never);
     qc.invalidateQueries({ queryKey: ["my-machines"] });
   }
 
@@ -197,7 +221,7 @@ function ShiftControl({
   onEnd,
 }: {
   machineId: string;
-  active: { machine_id: string; started_at: string } | null;
+  active: { machine_id: string; started_at: string; start_fuel_pct: number | null } | null;
   pending: boolean;
   loading: boolean;
   onStart: () => void;
@@ -219,6 +243,7 @@ function ShiftControl({
         </div>
         <span className="num text-[11px] text-muted-foreground">
           Started at {new Date(active.started_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          {active.start_fuel_pct != null && ` · start fuel ${active.start_fuel_pct}%`}
         </span>
       </div>
     );

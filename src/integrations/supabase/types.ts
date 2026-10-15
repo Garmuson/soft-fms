@@ -1159,29 +1159,35 @@ export type Database = {
       shifts: {
         Row: {
           created_at: string
+          end_fuel_pct: number | null
           ended_at: string | null
           hub_id: number
           id: string
           machine_id: string
           operator_id: string
+          start_fuel_pct: number | null
           started_at: string
         }
         Insert: {
           created_at?: string
+          end_fuel_pct?: number | null
           ended_at?: string | null
           hub_id: number
           id?: string
           machine_id: string
           operator_id: string
+          start_fuel_pct?: number | null
           started_at?: string
         }
         Update: {
           created_at?: string
+          end_fuel_pct?: number | null
           ended_at?: string | null
           hub_id?: number
           id?: string
           machine_id?: string
           operator_id?: string
+          start_fuel_pct?: number | null
           started_at?: string
         }
         Relationships: [
