@@ -97,7 +97,7 @@ export function MachineDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-3 sm:p-6"
+      className="ym-modal fixed inset-0 z-50 overflow-y-auto bg-black/70 p-3 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={`Machine ${unitId}`}

@@ -378,7 +378,7 @@ function DriversPage() {
       </Panel>
 
       {open && canEdit && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
+        <div className="ym-modal fixed inset-0 z-50 grid place-items-center bg-black/70 p-4">
           <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border border-border bg-surface p-5">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold">{editing ? "Edit driver" : "Add driver"}</h2>

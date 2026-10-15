@@ -86,7 +86,7 @@ function FuelPage() {
     <>
       <PageHeader title="Fuel Overview" subtitle="Last 30 days across the national fleet" />
 
-      <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(180px,1fr))]">
+      <div className="kpi-grid grid gap-3">
         <KpiCard
           label="Fuel This Month"
           value={`${Math.round(totalVol).toLocaleString()} gal`}

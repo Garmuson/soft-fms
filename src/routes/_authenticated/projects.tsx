@@ -182,7 +182,7 @@ function ProjectsPage() {
 
       {detail && (
         <div
-          className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4"
+          className="ym-modal fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4"
           role="dialog"
           aria-modal="true"
           onClick={() => setOpen(null)}

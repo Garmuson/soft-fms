@@ -178,7 +178,7 @@ function FuelLogPage() {
       </Panel>
 
       {adding && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true">
+        <div className="ym-modal fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true">
           <div className="w-full max-w-md rounded-lg border border-border bg-surface">
             <header className="flex items-center justify-between border-b border-border px-4 py-3">
               <h2 className="text-sm font-semibold">Add Fuel Entry</h2>

@@ -139,7 +139,7 @@ function DevicesPage() {
         }
       />
 
-      <div className="mb-4 grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
+      <div className="mb-4 kpi-grid grid gap-3">
         <KpiCard label="Devices" value={all.length} accent="gold" loading={devicesQ.isLoading} />
         <KpiCard
           label="Trackers"
