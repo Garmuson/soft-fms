@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { ROLE_HOME, type Role } from "@/lib/fleet";
 import { useMemo, useState } from "react";
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -66,10 +67,18 @@ export const Route = createFileRoute("/_authenticated/driver-assignments")({
       },
     ],
   }),
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return;
+    const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).maybeSingle();
+    const role = r?.role as Role | undefined;
+    if (role === "data_entry_staff" || role === "data_entry_supervisor") {
+      toast.error("You do not have permission to access this page");
+      throw redirect({ to: ROLE_HOME[role] });
+    }
+  },
   component: () => (
-    <RoleGate
-      allow={["hq_admin", "hub_supervisor", "ministry_analyst", "data_entry_supervisor", "data_entry_staff"]}
-    >
+    <RoleGate allow={["hq_admin", "hub_supervisor", "ministry_analyst"]}>
       <AssignmentsPage />
     </RoleGate>
   ),
