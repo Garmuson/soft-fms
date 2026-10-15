@@ -227,5 +227,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 [role="dialog"] h2 { color: var(--cat-yellow); }
 [data-sonner-toast] { background: var(--cat-charcoal) !important; border-left: 4px solid var(--cat-blue, #1565C0) !important; }
 [data-sonner-toast][data-type="success"] { border-left-color: var(--green) !important; }
+[data-sonner-toast][data-type="success"], [data-sonner-toast][data-type="success"] * { color: var(--green) !important; }
 [data-sonner-toast][data-type="error"] { border-left-color: var(--red) !important; }
-[data-sonner-toast][data-type="warning"] { border-left-color: var(--amber) !important; }
+[data-sonner-toast][data-type="warning"] { border-left-color: var(--red) !important; }
+[data-sonner-toast][data-type="error"], [data-sonner-toast][data-type="error"] *,
+[data-sonner-toast][data-type="warning"], [data-sonner-toast][data-type="warning"] * { color: #FF5252 !important; }
