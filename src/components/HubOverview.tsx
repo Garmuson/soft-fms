@@ -128,7 +128,7 @@ export function HubOverview({ hubId, isSupervisorHome = false }: { hubId: number
         }
       />
 
-      <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
+      <div className="kpi-grid grid gap-3">
         <KpiCard label="Total Machines" value={machines.length} loading={machinesQ.isLoading} />
         <KpiCard label="Active Today" value={active} accent="green" loading={machinesQ.isLoading} />
         <KpiCard label="In Maintenance" value={count("maintenance")} accent="blue" loading={machinesQ.isLoading} />

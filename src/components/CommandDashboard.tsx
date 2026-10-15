@@ -66,7 +66,7 @@ export function CommandDashboard({ readOnly = false }: { readOnly?: boolean }) {
         subtitle={`${total} machines across ${hubs.length} hubs · ${readOnly ? "read-only ministry view" : "fleet-wide command and control"}`}
       />
 
-      <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
+      <div className="kpi-grid grid gap-3">
         <KpiCard label="Active Machines" value={active} accent="green" sub="Working now" loading={loading} />
         <KpiCard label="In Maintenance" value={count("maintenance")} accent="blue" sub="Workshop" loading={loading} />
         <KpiCard label="Idle / Standby" value={count("idle")} accent="amber" sub="Awaiting task" loading={loading} />
