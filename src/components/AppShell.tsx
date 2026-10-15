@@ -307,7 +307,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {!isOperator && (
           <button
             onClick={() => setCollapsed((c) => !c)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+            className="hidden rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground lg:block"
             aria-label="Toggle navigation"
           >
             <Menu className="size-4" />
@@ -319,10 +319,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </span>
           <span className="text-sm font-semibold tracking-tight text-gold">YM-FMS</span>
         </Link>
-        <span className="hidden h-5 w-px bg-border sm:block" />
-        <span className="hidden truncate text-xs text-muted-foreground sm:block">{context}</span>
+        <span className="hidden h-5 w-px bg-border md:block" />
+        <span className="hidden truncate text-xs text-muted-foreground md:block">{context}</span>
         {readOnly && (
-          <span className="rounded-full bg-blue-dim px-2 py-0.5 text-[10px] font-medium text-blue">
+          <span className="hidden rounded-full bg-blue-dim px-2 py-0.5 text-[10px] font-medium text-blue md:inline">
             Read Only
           </span>
         )}
@@ -332,7 +332,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </span>
         <button
           onClick={() => setDrawer(true)}
-          className="relative rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+          className="relative hidden rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground md:block"
           aria-label={`Notifications, ${unread.length} unread`}
         >
           <Bell className="size-4" />
@@ -342,11 +342,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
           )}
         </button>
-        <div className="flex items-center gap-2 pl-1">
+        <div className="hidden items-center gap-2 pl-1 md:flex">
           <span className="grid size-7 place-items-center rounded-full border border-border bg-surface-2 text-[10px] font-semibold">
             {initials}
           </span>
-          <span className="hidden leading-tight sm:block">
+          <span className="hidden leading-tight lg:block">
             <span className="block text-xs font-medium">{profile?.full_name || "User"}</span>
             <span className="block text-[10px] text-muted-foreground">
               {role ? ROLE_LABEL[role] : ""}
@@ -355,10 +355,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
         <button
           onClick={signOut}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-red"
+          className="hidden rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-red md:block"
           aria-label="Sign out"
         >
           <LogOut className="size-4" />
+        </button>
+        <button
+          onClick={() => setMore(true)}
+          className="relative grid size-11 place-items-center rounded-md text-foreground md:hidden"
+          aria-label="Open menu"
+        >
+          <Menu className="size-6" />
+          {unread.length > 0 && <span className="absolute right-2 top-2 size-2.5 rounded-full bg-red" />}
         </button>
       </header>
 
