@@ -251,7 +251,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     label();
     const mo = new MutationObserver(label);
     mo.observe(el, { childList: true, subtree: true });
-    return () => mo.disconnect();
+    const onClick = (e: MouseEvent) => {
+      if (window.innerWidth >= 768) return;
+      const t = e.target as HTMLElement;
+      if (t.closest("button, a, input, select, textarea, label")) return;
+      const tr = t.closest("tbody tr");
+      if (tr && tr.children.length > 4) tr.classList.toggle("ym-open");
+    };
+    el.addEventListener("click", onClick);
+    return () => {
+      mo.disconnect();
+      el.removeEventListener("click", onClick);
+    };
   }, []);
   const [seen, setSeen] = useState<string[]>([]);
   const { online, justBack } = useOnline();

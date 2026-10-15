@@ -1,3 +1,4 @@
+import { MobileSteps } from "@/components/MobileSteps";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -129,7 +130,7 @@ function FuelEntryPage() {
     <>
       <PageHeader title="Fuel Entry" subtitle="Record a refill" />
       <Panel>
-        <div className="space-y-4">
+        <MobileSteps>
           <label className="block text-[11px] text-muted-foreground">
             Machine
             <select
@@ -156,7 +157,7 @@ function FuelEntryPage() {
             />
           </label>
 
-          {(["before", "after"] as const).map((k) => (
+          <div className="space-y-4">{(["before", "after"] as const).map((k) => (
             <label key={k} className="block text-[11px] text-muted-foreground">
               Fuel level {k}: <span className="num text-foreground">{form[k]}%</span>
               <input
@@ -168,7 +169,7 @@ function FuelEntryPage() {
                 className="mt-2 w-full accent-[#2ea043]"
               />
             </label>
-          ))}
+          ))}</div>
 
           <div>
             <button className={`${btn.secondary} h-11`} onClick={detect}>
@@ -197,7 +198,7 @@ function FuelEntryPage() {
           >
             {busy ? "Saving…" : "Submit Fuel Entry"}
           </button>
-        </div>
+        </MobileSteps>
       </Panel>
     </>
   );

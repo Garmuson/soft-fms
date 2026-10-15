@@ -1,3 +1,4 @@
+import { MobileSteps } from "@/components/MobileSteps";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -136,7 +137,7 @@ function IncidentPage() {
     <>
       <PageHeader title="Incident Report" subtitle="Report a problem in the field" />
       <Panel>
-        <div className="space-y-4">
+        <MobileSteps>
           <label className="block text-[11px] text-muted-foreground">
             Machine
             <select
@@ -217,7 +218,7 @@ function IncidentPage() {
           >
             {busy ? "Submitting…" : "Submit Report"}
           </button>
-        </div>
+        </MobileSteps>
       </Panel>
     </>
   );

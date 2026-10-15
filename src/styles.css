@@ -268,3 +268,9 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   /* Map legend collapses into bottom-left overlay */
   .leaflet-control-attribution { font-size: 10px !important; max-width: 60vw; }
 }
+@media (max-width: 767px) {
+  /* Card lists: first 4 fields, tap "View details" for the rest */
+  main table tbody tr:has(td:nth-child(5)):not(.ym-open) td:nth-child(n+5) { display: none; }
+  main table tbody tr:has(td:nth-child(5))::after { content: "View details ›"; display: block; padding-top: 6px; color: var(--cat-yellow); font-size: 14px; text-align: right; }
+  main table tbody tr.ym-open::after { content: "Hide details ‹"; }
+}

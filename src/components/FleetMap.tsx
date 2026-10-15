@@ -75,6 +75,7 @@ export default function FleetMap({
   onSelect?: (unitId: string) => void;
 }) {
   const [selId, setSelId] = useState<string | null>(null);
+  const [legendOpen, setLegendOpen] = useState(false);
   const { data: profiles = [] } = useQuery(profilesQuery());
   const { data: projects = [] } = useQuery(projectsQuery());
   const sel = machines.find((m) => m.id === selId) ?? null;
@@ -167,7 +168,7 @@ export default function FleetMap({
       </MapContainer>
       {sel && (
         <aside
-          className="absolute inset-x-2 bottom-2 z-[600] max-h-[80%] overflow-y-auto rounded-lg border border-border bg-surface p-3 text-xs shadow-lg sm:inset-x-auto sm:bottom-auto sm:right-2 sm:top-2 sm:w-72"
+          className="fixed inset-x-0 bottom-0 z-[1000] max-h-[70vh] overflow-y-auto rounded-t-2xl border pb-[calc(1rem+env(safe-area-inset-bottom))] sm:absolute sm:pb-3 sm:rounded-lg sm:max-h-[80%] border-border bg-surface p-3 text-xs shadow-lg sm:inset-x-auto sm:bottom-auto sm:right-2 sm:top-2 sm:w-72"
           aria-label={`Details for ${sel.unit_id}`}
           onClick={(e) => e.stopPropagation()}
         >
@@ -217,13 +218,18 @@ export default function FleetMap({
           )}
         </aside>
       )}
-      <div className="pointer-events-none absolute bottom-2 right-2 z-[500] rounded-md border border-border bg-surface/95 px-2 py-1.5 text-[10px]">
-        {["active", "idle", "alert", "maintenance", "offline"].map((s) => (
-          <div key={s} className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ background: STATUS_HEX[s] }} />
-            <span className="text-muted-foreground">{statusLabel(s)}</span>
-          </div>
-        ))}
+      <div className="absolute bottom-2 left-2 z-[500] rounded-md border border-border bg-surface/95 px-2 py-1.5 text-[10px] sm:pointer-events-none sm:left-auto sm:right-2">
+        <button type="button" className="flex min-h-9 items-center gap-1 text-sm font-medium sm:hidden" onClick={() => setLegendOpen((o) => !o)} aria-expanded={legendOpen}>
+          Legend {legendOpen ? "▾" : "▸"}
+        </button>
+        <div className={legendOpen ? "block" : "hidden sm:block"}>
+          {["active", "idle", "alert", "maintenance", "offline"].map((s) => (
+            <div key={s} className="flex items-center gap-1.5">
+              <span className="size-2 rounded-full" style={{ background: STATUS_HEX[s] }} />
+              <span className="text-muted-foreground">{statusLabel(s)}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
