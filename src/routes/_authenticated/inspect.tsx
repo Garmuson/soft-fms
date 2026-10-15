@@ -1,3 +1,4 @@
+import { MobileSteps } from "@/components/MobileSteps";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -138,6 +139,7 @@ function InspectPage() {
   return (
     <>
       <PageHeader title="Inspection" subtitle="Pre and post deployment checklist" />
+      <MobileSteps>
       <Panel>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block text-[11px] text-muted-foreground">
@@ -169,8 +171,6 @@ function InspectPage() {
           </label>
         </div>
       </Panel>
-
-      <div className="mt-3 space-y-2">
         {ITEMS.map((i) => {
           const s = state[i.key]!;
           return (
@@ -210,7 +210,6 @@ function InspectPage() {
             </Panel>
           );
         })}
-      </div>
 
       <div className="sticky bottom-16 mt-4 md:bottom-4">
         <button
@@ -221,6 +220,7 @@ function InspectPage() {
           {busy ? "Submitting…" : `Submit Inspection (${overall})`}
         </button>
       </div>
+      </MobileSteps>
     </>
   );
 }
