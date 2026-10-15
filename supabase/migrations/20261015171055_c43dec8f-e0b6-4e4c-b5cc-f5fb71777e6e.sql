@@ -1,0 +1,1 @@
+ALTER TABLE public.shifts ADD COLUMN IF NOT EXISTS start_fuel_pct integer CHECK (start_fuel_pct BETWEEN 0 AND 100), ADD COLUMN IF NOT EXISTS end_fuel_pct integer CHECK (end_fuel_pct BETWEEN 0 AND 100);
