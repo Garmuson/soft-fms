@@ -30,14 +30,14 @@ export function AddMachineModal({ hubs, onClose }: { hubs: Hub[]; onClose: () =>
   const [busy, setBusy] = useState(false);
   const set = (k: keyof typeof f, v: string | number) => setF((p) => ({ ...p, [k]: v }));
 
-  async function save() {
+  async function save(): Promise<void> {
     const unit = f.unit_id.trim().toUpperCase().replace(/[^A-Z0-9-]/g, "");
     const cap = Number(f.tank_capacity_gal);
     const lvl = Number(f.fuel_level);
-    if (!unit) return toast.error("Unit ID is required");
+    if (!unit) { toast.error("Unit ID is required"); return; }
     if (!Number.isFinite(cap) || cap <= 0 || cap > 2000)
-      return toast.error("Tank capacity must be between 1 and 2,000 gal");
-    if (!Number.isFinite(lvl) || lvl < 0 || lvl > 100) return toast.error("Fuel level must be 0–100%");
+      { toast.error("Tank capacity must be between 1 and 2,000 gal"); return; }
+    if (!Number.isFinite(lvl) || lvl < 0 || lvl > 100) { toast.error("Fuel level must be 0–100%"); return; }
     setBusy(true);
     const { error } = await supabase.from("machines").insert({
       unit_id: unit,
@@ -50,7 +50,7 @@ export function AddMachineModal({ hubs, onClose }: { hubs: Hub[]; onClose: () =>
       status: "idle",
     } as never);
     setBusy(false);
-    if (error) return toast.error(error.code === "23505" ? "That unit ID already exists" : error.message);
+    if (error) { toast.error(error.code === "23505" ? "That unit ID already exists" : error.message); return; }
     toast.success(`Machine ${unit} added`);
     qc.invalidateQueries();
     onClose();
