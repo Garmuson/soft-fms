@@ -167,7 +167,6 @@ const NAV: Record<Role, NavSection[]> = {
       title: "Drivers",
       items: [
         { to: "/drivers", label: "Driver Registry", icon: Users },
-        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
       ],
     },
     {
@@ -188,7 +187,6 @@ const NAV: Record<Role, NavSection[]> = {
       items: [
         { to: "/data-entry", label: "Enter Data", icon: Database },
         { to: "/drivers", label: "Driver Registry", icon: Users },
-        { to: "/driver-assignments", label: "Assignments", icon: UserCog },
       ],
     },
     {
