@@ -64,4 +64,4 @@
 
 ## Gallons-only fuel units
 - [x] Convert remaining fuel entry forms, machine logs, review queue, scorecards and exports to US gallons while preserving depot drawdown.
-- [ ] Verify gallon labels and input conversion in the running app.
+- [x] Verify gallon labels and input conversion in the running app (live records read; test submission intercepted to avoid changing stock).
