@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 type NavItem = { to: string; label: string; icon: typeof Zap };
 type NavSection = { title: string; items: NavItem[] };
 
-const NAV: Record<Role, NavSection[]> = {
+const NAV: Partial<Record<Role, NavSection[]>> = {
   hq_admin: [
     {
       title: "Command",
@@ -303,7 +303,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     navigate({ to: "/auth", replace: true });
   }
 
-  const sections = role ? NAV[role] : [];
+  const sections = (role && NAV[role]) || [];
   const initials = (profile?.full_name || profile?.email || "?")
     .split(" ")
     .map((p) => p[0])
