@@ -35,13 +35,13 @@ export const Route = createFileRoute("/_authenticated/users")({
   ),
 });
 
-const ROLE_DESC: Record<Role, string> = {
+const ROLE_DESC: Partial<Record<Role, string>> = {
   hq_admin: "Full fleet-wide access to all 19 hubs and every module.",
   hub_supervisor: "Access limited strictly to one assigned hub.",
   ministry_analyst: "Read-only national overview and reports.",
   data_entry_supervisor:
     "Reviews and approves records entered by hub data entry staff, nationwide.",
-  data_entry_staff: "Enters fuel, maintenance, driver and project data for one assigned hub.",
+  data_entry_staff: "Runs shifts, fuel entry, inspections, incidents and tasks, and enters fuel, maintenance and driver data for one hub.",
 };
 
 function initials(name: string) {
