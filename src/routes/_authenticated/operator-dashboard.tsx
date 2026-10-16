@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
 import { AlertTriangle, Clock, Fuel, Loader2, Square, Truck } from "lucide-react";
-import { myMachinesQuery } from "@/lib/api";
+import { machinesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { EmptyState, PageHeader, Panel, SkeletonCards, StatusBadge, btn } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/operator-dashboard")({
     ],
   }),
   component: () => (
-    <RoleGate allow={["field_operator"]}>
+    <RoleGate allow={["data_entry_staff"]}>
       <OperatorHome />
     </RoleGate>
   ),
@@ -57,9 +57,9 @@ function Gauge({ pct }: { pct: number }) {
 }
 
 function OperatorHome() {
-  const { profile } = useAuth();
+  const { profile, hubId } = useAuth();
   const qc = useQueryClient();
-  const machinesQ = useQuery(myMachinesQuery(profile?.id));
+  const machinesQ = useQuery(machinesQuery(hubId));
 
   const shiftQ = useQuery({
     queryKey: ["active-shift", profile?.id],
@@ -110,7 +110,7 @@ function OperatorHome() {
     }
     toast.success(`Shift started · fuel ${startPct}%`);
     void logAudit(profile, { action: "started shift", entity: "machine", entity_ref: m.unit_id, hub_id: m.hub_id, detail: `Start fuel ${startPct}%` } as never);
-    qc.invalidateQueries({ queryKey: ["my-machines"] });
+    qc.invalidateQueries({ queryKey: ["machines"] });
   }
 
   async function endShift() {
@@ -138,14 +138,14 @@ function OperatorHome() {
     const used = start != null ? start - endPct : null;
     toast.success(used != null ? `Shift ended · used ${used}% of tank` : "Shift ended");
     void logAudit(profile, { action: "ended shift", entity: "machine", entity_ref: m?.unit_id ?? null, hub_id: m?.hub_id ?? null, detail: `End fuel ${endPct}%` } as never);
-    qc.invalidateQueries({ queryKey: ["my-machines"] });
+    qc.invalidateQueries({ queryKey: ["machines"] });
   }
 
   const machines = machinesQ.data ?? [];
 
   return (
     <>
-      <PageHeader title="My Machines" subtitle="Machines assigned to you for this shift" />
+      <PageHeader title="My Machines" subtitle="Your hub's machines — start shifts and log activity" />
       <PendingSync />
 
       {machinesQ.isLoading ? (

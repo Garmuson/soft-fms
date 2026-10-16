@@ -35,14 +35,13 @@ export const Route = createFileRoute("/_authenticated/users")({
   ),
 });
 
-const ROLE_DESC: Record<Role, string> = {
+const ROLE_DESC: Partial<Partial<Record<Role, string>>> = {
   hq_admin: "Full fleet-wide access to all 19 hubs and every module.",
   hub_supervisor: "Access limited strictly to one assigned hub.",
-  field_operator: "Mobile access to their own assigned machines only.",
   ministry_analyst: "Read-only national overview and reports.",
   data_entry_supervisor:
     "Reviews and approves records entered by hub data entry staff, nationwide.",
-  data_entry_staff: "Enters fuel, maintenance, driver and project data for one assigned hub.",
+  data_entry_staff: "Runs shifts, fuel entry, inspections, incidents and tasks, and enters fuel, maintenance and driver data for one hub.",
 };
 
 function initials(name: string) {
@@ -132,7 +131,7 @@ function UsersPage() {
               </thead>
               <tbody>
                 {rows.map((u) => {
-                  const role = (roles.find((r) => r.user_id === u.id)?.role ?? "field_operator") as Role;
+                  const role = (roles.find((r) => r.user_id === u.id)?.role ?? "data_entry_staff") as Role;
                   return (
                     <tr key={u.id} className="border-b border-border hover:bg-surface-2">
                       <td className="px-2 py-2">
@@ -227,7 +226,7 @@ function UsersPage() {
                   </label>
                 ))}
               </fieldset>
-              {(form.role === "hub_supervisor" || form.role === "field_operator") && (
+              {(form.role === "hub_supervisor" || form.role === "data_entry_staff") && (
                 <label className="block text-[10px] text-muted-foreground">
                   Hub assignment
                   <select

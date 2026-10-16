@@ -40,7 +40,7 @@ import { cn } from "@/lib/utils";
 type NavItem = { to: string; label: string; icon: typeof Zap };
 type NavSection = { title: string; items: NavItem[] };
 
-const NAV: Record<Role, NavSection[]> = {
+const NAV: Partial<Record<Role, NavSection[]>> = {
   hq_admin: [
     {
       title: "Command",
@@ -116,22 +116,6 @@ const NAV: Record<Role, NavSection[]> = {
       ],
     },
   ],
-  field_operator: [
-    {
-      title: "Shift",
-      items: [
-        { to: "/operator-dashboard", label: "My Machines", icon: Truck },
-        { to: "/tasks", label: "Today's Tasks", icon: ListChecks },
-        { to: "/inspect", label: "Inspection", icon: ShieldCheck },
-        { to: "/fuel-entry", label: "Fuel Entry", icon: Fuel },
-        { to: "/incident", label: "Incident", icon: AlertTriangle },
-      ],
-    },
-    {
-      title: "Help",
-      items: [{ to: "/handbook", label: "Handbook", icon: BookOpen }],
-    },
-  ],
   ministry_analyst: [
     {
       title: "National",
@@ -187,7 +171,17 @@ const NAV: Record<Role, NavSection[]> = {
       title: "My hub",
       items: [
         { to: "/data-entry", label: "Enter Data", icon: Database },
+        { to: "/operator-dashboard", label: "Shifts", icon: Truck },
+        { to: "/fuel-entry", label: "Fuel Entry", icon: Fuel },
         { to: "/drivers", label: "Driver Registry", icon: Users },
+      ],
+    },
+    {
+      title: "Field records",
+      items: [
+        { to: "/tasks", label: "Today's Tasks", icon: ListChecks },
+        { to: "/inspect", label: "Inspection", icon: ShieldCheck },
+        { to: "/incident", label: "Incident", icon: AlertTriangle },
       ],
     },
     {
@@ -309,7 +303,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     navigate({ to: "/auth", replace: true });
   }
 
-  const sections = role ? NAV[role] : [];
+  const sections = (role && NAV[role]) || [];
   const initials = (profile?.full_name || profile?.email || "?")
     .split(" ")
     .map((p) => p[0])

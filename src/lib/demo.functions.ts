@@ -12,7 +12,6 @@ const DEMO_USERS: { email: string; name: string; role: Role; hub: number | null 
   { email: "hq@sppcc.gov.lr", name: "SPPCC Administrator", role: "hq_admin", hub: null },
   { email: "hub2@sppcc.gov.lr", name: "Hub 2 Supervisor", role: "hub_supervisor", hub: 2 },
   { email: "hub10@sppcc.gov.lr", name: "Hub 10 Supervisor", role: "hub_supervisor", hub: 10 },
-  { email: "operator@sppcc.gov.lr", name: "Field Operator", role: "field_operator", hub: 2 },
   { email: "ministry@sppcc.gov.lr", name: "Ministry Analyst", role: "ministry_analyst", hub: null },
   {
     email: "dataentry@sppcc.gov.lr",
@@ -80,7 +79,7 @@ export const ensureDemoUsers = createServerFn({ method: "POST" }).handler(async 
   }
 
   // Give the field operator a shift: assign four Hub 2 machines + work orders.
-  const operatorId = ids["operator@sppcc.gov.lr"];
+  const operatorId = ids["dataclerk@sppcc.gov.lr"];
   if (operatorId) {
     const { data: hubMachines } = await supabaseAdmin
       .from("machines")
