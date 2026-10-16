@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/tasks")({
     ],
   }),
   component: () => (
-    <RoleGate allow={["field_operator"]}>
+    <RoleGate allow={["data_entry_staff"]}>
       <TasksPage />
     </RoleGate>
   ),
@@ -32,9 +32,9 @@ const PRIORITY_TONE: Record<string, string> = {
 };
 
 function TasksPage() {
-  const { profile, hubId } = useAuth();
+  const { hubId } = useAuth();
   const qc = useQueryClient();
-  const woQ = useQuery(workOrdersQuery(hubId, profile?.id));
+  const woQ = useQuery(workOrdersQuery(hubId));
   const { data: machines = [] } = useQuery(machinesQuery(hubId));
 
   async function update(id: string, status: string, notes?: string) {
@@ -57,7 +57,7 @@ function TasksPage() {
 
   return (
     <>
-      <PageHeader title="Today's Tasks" subtitle={`${rows.length} assigned to you`} />
+      <PageHeader title="Today's Tasks" subtitle={`${rows.length} open for your hub`} />
       {woQ.isLoading ? (
         <SkeletonCards count={3} height={120} />
       ) : rows.length === 0 ? (

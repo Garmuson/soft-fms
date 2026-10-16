@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
-import { myMachinesQuery } from "@/lib/api";
+import { machinesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/inspect")({
     ],
   }),
   component: () => (
-    <RoleGate allow={["field_operator", "hub_supervisor"]}>
+    <RoleGate allow={["data_entry_staff", "hub_supervisor"]}>
       <InspectPage />
     </RoleGate>
   ),
@@ -51,7 +51,7 @@ type Result = "pass" | "fail" | "na";
 function InspectPage() {
   const { profile, hubId } = useAuth();
   const qc = useQueryClient();
-  const { data: machines = [] } = useQuery(myMachinesQuery(profile?.id));
+  const { data: machines = [] } = useQuery(machinesQuery(hubId));
   const [machineId, setMachineId] = useState("");
   const [type, setType] = useState("pre_deployment");
   const [state, setState] = useState<Record<string, { result: Result; notes: string }>>(

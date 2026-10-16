@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CheckCircle2, MapPin } from "lucide-react";
-import { LITRES_PER_GAL, myMachinesQuery } from "@/lib/api";
+import { LITRES_PER_GAL, machinesQuery } from "@/lib/api";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Panel, btn, inputCls } from "@/components/kit";
 import { RoleGate } from "@/components/RoleGate";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/fuel-entry")({
     ],
   }),
   component: () => (
-    <RoleGate allow={["field_operator", "hub_supervisor"]}>
+    <RoleGate allow={["data_entry_staff", "hub_supervisor"]}>
       <FuelEntryPage />
     </RoleGate>
   ),
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/fuel-entry")({
 function FuelEntryPage() {
   const { profile, hubId } = useAuth();
   const qc = useQueryClient();
-  const { data: machines = [] } = useQuery(myMachinesQuery(profile?.id));
+  const { data: machines = [] } = useQuery(machinesQuery(hubId));
   const [done, setDone] = useState<null | { unit: string; volume: number }>(null);
   const [busy, setBusy] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
