@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/users")({
   ),
 });
 
-const ROLE_DESC: Partial<Record<Role, string>> = {
+const ROLE_DESC: Partial<Partial<Record<Role, string>>> = {
   hq_admin: "Full fleet-wide access to all 19 hubs and every module.",
   hub_supervisor: "Access limited strictly to one assigned hub.",
   ministry_analyst: "Read-only national overview and reports.",
