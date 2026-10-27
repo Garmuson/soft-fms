@@ -95,7 +95,7 @@ function AuthPage() {
             <img
               src={logoAsset.url}
               alt="YeloForce Fleet Management System"
-              className="h-16 w-auto"
+              className="h-24 w-auto"
             />
             <p className="mt-8 text-sm leading-relaxed text-foreground">
               Fleet management system for 285 Yellow Machines across 19 hubs — Republic of Liberia
