@@ -274,3 +274,15 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   main table tbody tr:has(td:nth-child(5))::after { content: "View details ›"; display: block; padding-top: 6px; color: var(--cat-yellow); font-size: 14px; text-align: right; }
   main table tbody tr.ym-open::after { content: "Hide details ‹"; }
 }
+
+/* Help Centre print stylesheet: prints only the manual body, cover page, chapter page breaks */
+@media print {
+  body * { visibility: hidden; }
+  #manual-print-root, #manual-print-root * { visibility: visible; }
+  #manual-print-root { position: absolute; left: 0; top: 0; width: 100%; }
+  #manual-print-root .no-print { display: none !important; }
+  .manual-chapter { break-before: page; }
+  .manual-chapter:first-of-type { break-before: avoid; }
+  .manual-cover { break-after: page; }
+  @page { margin: 18mm; }
+}

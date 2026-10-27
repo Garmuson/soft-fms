@@ -14,6 +14,7 @@ import {
   UserCog,
   Fuel,
   Gauge,
+  HelpCircle,
   History,
   LogOut,
   Map as MapIcon,
@@ -35,6 +36,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { alertsQuery, hubsQuery, machinesQuery } from "@/lib/api";
 import { ROLE_LABEL, rollupHubs, timeAgo, utilColor, type Role } from "@/lib/fleet";
 import { LiveIndicator } from "@/components/kit";
+import { chapterForPath } from "@/content/manual";
 import { cn } from "@/lib/utils";
 
 type NavItem = { to: string; label: string; icon: typeof Zap };
@@ -83,6 +85,7 @@ const NAV: Partial<Record<Role, NavSection[]>> = {
         { to: "/activity", label: "Activity Log", icon: History },
         { to: "/settings", label: "Settings", icon: Cog },
         { to: "/handbook", label: "Handbook", icon: BookOpen },
+        { to: "/help", label: "Help Centre", icon: HelpCircle },
       ],
     },
   ],
@@ -113,6 +116,7 @@ const NAV: Partial<Record<Role, NavSection[]>> = {
         { to: "/devices", label: "Devices", icon: Cpu },
         { to: "/hub-reports", label: "Hub Reports", icon: FileText },
         { to: "/handbook", label: "Handbook", icon: BookOpen },
+        { to: "/help", label: "Help Centre", icon: HelpCircle },
       ],
     },
   ],
@@ -137,6 +141,7 @@ const NAV: Partial<Record<Role, NavSection[]>> = {
         { to: "/devices", label: "Device Register", icon: Cpu },
         { to: "/activity", label: "Activity Log", icon: History },
         { to: "/handbook", label: "Handbook", icon: BookOpen },
+        { to: "/help", label: "Help Centre", icon: HelpCircle },
       ],
     },
   ],
@@ -189,6 +194,7 @@ const NAV: Partial<Record<Role, NavSection[]>> = {
       items: [
         { to: "/my-machines", label: "Hub Machines", icon: Truck },
         { to: "/handbook", label: "Handbook", icon: BookOpen },
+        { to: "/help", label: "Help Centre", icon: HelpCircle },
       ],
     },
   ],
@@ -371,6 +377,14 @@ export function AppShell({ children }: { children: ReactNode }) {
               {unread.length}
             </span>
           )}
+        </button>
+        <button
+          onClick={() => navigate({ to: "/help", hash: chapterForPath(pathname) })}
+          className="hidden rounded-md p-1.5 text-muted-foreground hover:bg-surface-2 hover:text-foreground md:block"
+          aria-label="Help for this page"
+          title="Help for this page"
+        >
+          <HelpCircle className="size-4" />
         </button>
         <div className="hidden items-center gap-2 pl-1 md:flex">
           <span className="grid size-7 place-items-center rounded-full border border-border bg-surface-2 text-[10px] font-semibold">

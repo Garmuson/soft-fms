@@ -26,6 +26,7 @@ import { Route as AuthenticatedFuelEntryRouteImport } from './routes/_authentica
 import { Route as AuthenticatedFuelLogRouteImport } from './routes/_authenticated/fuel-log'
 import { Route as AuthenticatedGeofencesRouteImport } from './routes/_authenticated/geofences'
 import { Route as AuthenticatedHandbookRouteImport } from './routes/_authenticated/handbook'
+import { Route as AuthenticatedHelpRouteImport } from './routes/_authenticated/help'
 import { Route as AuthenticatedHubAlertsRouteImport } from './routes/_authenticated/hub-alerts'
 import { Route as AuthenticatedHubDashboardRouteImport } from './routes/_authenticated/hub-dashboard'
 import { Route as AuthenticatedHubReportsRouteImport } from './routes/_authenticated/hub-reports'
@@ -129,6 +130,11 @@ const AuthenticatedGeofencesRoute = AuthenticatedGeofencesRouteImport.update({
 const AuthenticatedHandbookRoute = AuthenticatedHandbookRouteImport.update({
   id: '/handbook',
   path: '/handbook',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHelpRoute = AuthenticatedHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedHubAlertsRoute = AuthenticatedHubAlertsRouteImport.update({
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/fuel-log': typeof AuthenticatedFuelLogRoute
   '/geofences': typeof AuthenticatedGeofencesRoute
   '/handbook': typeof AuthenticatedHandbookRoute
+  '/help': typeof AuthenticatedHelpRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
@@ -285,6 +292,7 @@ export interface FileRoutesByTo {
   '/fuel-log': typeof AuthenticatedFuelLogRoute
   '/geofences': typeof AuthenticatedGeofencesRoute
   '/handbook': typeof AuthenticatedHandbookRoute
+  '/help': typeof AuthenticatedHelpRoute
   '/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/hub-reports': typeof AuthenticatedHubReportsRoute
@@ -324,6 +332,7 @@ export interface FileRoutesById {
   '/_authenticated/fuel-log': typeof AuthenticatedFuelLogRoute
   '/_authenticated/geofences': typeof AuthenticatedGeofencesRoute
   '/_authenticated/handbook': typeof AuthenticatedHandbookRoute
+  '/_authenticated/help': typeof AuthenticatedHelpRoute
   '/_authenticated/hub-alerts': typeof AuthenticatedHubAlertsRoute
   '/_authenticated/hub-dashboard': typeof AuthenticatedHubDashboardRoute
   '/_authenticated/hub-reports': typeof AuthenticatedHubReportsRoute
@@ -363,6 +372,7 @@ export interface FileRouteTypes {
     | '/fuel-log'
     | '/geofences'
     | '/handbook'
+    | '/help'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
@@ -400,6 +410,7 @@ export interface FileRouteTypes {
     | '/fuel-log'
     | '/geofences'
     | '/handbook'
+    | '/help'
     | '/hub-alerts'
     | '/hub-dashboard'
     | '/hub-reports'
@@ -438,6 +449,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fuel-log'
     | '/_authenticated/geofences'
     | '/_authenticated/handbook'
+    | '/_authenticated/help'
     | '/_authenticated/hub-alerts'
     | '/_authenticated/hub-dashboard'
     | '/_authenticated/hub-reports'
@@ -584,6 +596,13 @@ declare module '@tanstack/react-router' {
       path: '/handbook'
       fullPath: '/handbook'
       preLoaderRoute: typeof AuthenticatedHandbookRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/help': {
+      id: '/_authenticated/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof AuthenticatedHelpRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/hub-alerts': {
@@ -737,6 +756,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFuelLogRoute: typeof AuthenticatedFuelLogRoute
   AuthenticatedGeofencesRoute: typeof AuthenticatedGeofencesRoute
   AuthenticatedHandbookRoute: typeof AuthenticatedHandbookRoute
+  AuthenticatedHelpRoute: typeof AuthenticatedHelpRoute
   AuthenticatedHubAlertsRoute: typeof AuthenticatedHubAlertsRoute
   AuthenticatedHubDashboardRoute: typeof AuthenticatedHubDashboardRoute
   AuthenticatedHubReportsRoute: typeof AuthenticatedHubReportsRoute
@@ -773,6 +793,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFuelLogRoute: AuthenticatedFuelLogRoute,
   AuthenticatedGeofencesRoute: AuthenticatedGeofencesRoute,
   AuthenticatedHandbookRoute: AuthenticatedHandbookRoute,
+  AuthenticatedHelpRoute: AuthenticatedHelpRoute,
   AuthenticatedHubAlertsRoute: AuthenticatedHubAlertsRoute,
   AuthenticatedHubDashboardRoute: AuthenticatedHubDashboardRoute,
   AuthenticatedHubReportsRoute: AuthenticatedHubReportsRoute,
