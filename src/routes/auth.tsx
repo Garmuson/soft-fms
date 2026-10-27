@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ensureDemoUsers } from "@/lib/demo.functions";
 import { btn, inputCls } from "@/components/kit";
 import { ROLE_HOME, type Role } from "@/lib/fleet";
-import logoAsset from "@/assets/yeloforce-logo.png.asset.json";
+import logoAsset from "@/assets/yeloforce-logo-trim.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,

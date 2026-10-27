@@ -38,7 +38,7 @@ import { ROLE_LABEL, rollupHubs, timeAgo, utilColor, type Role } from "@/lib/fle
 import { LiveIndicator } from "@/components/kit";
 import { chapterForPath } from "@/content/manual";
 import { cn } from "@/lib/utils";
-import logoAsset from "@/assets/yeloforce-logo.png.asset.json";
+import logoAsset from "@/assets/yeloforce-logo-trim.png.asset.json";
 
 type NavItem = { to: string; label: string; icon: typeof Zap };
 type NavSection = { title: string; items: NavItem[] };
