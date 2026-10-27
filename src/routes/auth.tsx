@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ensureDemoUsers } from "@/lib/demo.functions";
 import { btn, inputCls } from "@/components/kit";
 import { ROLE_HOME, type Role } from "@/lib/fleet";
+import logoAsset from "@/assets/yeloforce-logo-trim.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -91,15 +92,11 @@ function AuthPage() {
       <div className="w-full max-w-4xl overflow-hidden rounded-lg border border-border bg-surface md:grid md:grid-cols-2">
         <div className="hidden flex-col justify-between border-r border-border bg-[radial-gradient(ellipse_at_50%_0%,rgba(242,194,0,0.12)_0%,transparent_60%)] p-8 md:flex">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-9 place-items-center rounded-md bg-gold-dim text-lg">🚜</span>
-              <div>
-                <p className="text-sm font-semibold tracking-tight text-gold">YM-FMS</p>
-                <p className="text-[11px] text-muted-foreground">
-                  Yellow Machine Fleet Management System
-                </p>
-              </div>
-            </div>
+            <img
+              src={logoAsset.url}
+              alt="YeloForce Fleet Management System"
+              className="h-24 w-auto"
+            />
             <p className="mt-8 text-sm leading-relaxed text-foreground">
               Fleet management system for 285 Yellow Machines across 19 hubs — Republic of Liberia
             </p>

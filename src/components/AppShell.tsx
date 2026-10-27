@@ -38,6 +38,7 @@ import { ROLE_LABEL, rollupHubs, timeAgo, utilColor, type Role } from "@/lib/fle
 import { LiveIndicator } from "@/components/kit";
 import { chapterForPath } from "@/content/manual";
 import { cn } from "@/lib/utils";
+import logoAsset from "@/assets/yeloforce-logo-trim.png.asset.json";
 
 type NavItem = { to: string; label: string; icon: typeof Zap };
 type NavSection = { title: string; items: NavItem[] };
@@ -349,11 +350,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Menu className="size-4" />
           </button>
         )}
-        <Link to="/" className="flex items-center gap-2">
-          <span className="grid size-6 place-items-center rounded-md bg-gold-dim text-[13px]">
-            🚜
-          </span>
-          <span className="text-sm font-semibold tracking-tight text-gold">YM-FMS</span>
+        <Link to="/" className="flex items-center">
+          <img
+            src={logoAsset.url}
+            alt="YeloForce Fleet Management System"
+            className="h-9 w-auto"
+          />
         </Link>
         <span className="hidden h-5 w-px bg-border md:block" />
         <span className="hidden truncate text-xs text-muted-foreground md:block">{context}</span>
