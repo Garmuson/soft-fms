@@ -983,7 +983,7 @@ export const MANUAL: ManualChapter[] = [
       { field: "Name", description: "The user's full name", required: "Yes", rules: "Free text" },
       { field: "Email", description: "Work email used to sign in", required: "Yes", rules: "Must be a valid email address" },
       { field: "Role", description: "The user's single role", required: "Yes", rules: "One of the five roles" },
-      { field: "Hub", description: "Hub the user belongs to", required: "For hub roles", rules: "One of the 19 hubs" },
+      { field: "Hub", description: "Hub the user belongs to", required: "Sometimes", rules: "Required for hub-based roles (Hub Supervisor, Data Entry Staff); one of the 19 hubs" },
     ],
     roleNotes: ["Only HQ Administrators can open this screen."],
     callouts: [

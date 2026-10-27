@@ -58,6 +58,10 @@ function ScreenBlocks({ screens }: { screens: string[] }) {
   const flush = () => {
     if (!table.length) return;
     const [head, ...rows] = table;
+    if (!head) {
+      table = [];
+      return;
+    }
     nodes.push(
       <div key={`t${nodes.length}`} className="overflow-x-auto">
         <table className="w-full border-collapse text-xs">
