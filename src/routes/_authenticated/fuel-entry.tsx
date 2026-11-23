@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/fuel-entry")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "Fuel Entry · YM-FMS Field" },
-      { property: "og:description", content: "Log gallons, cost and tank levels in seconds." },
+      { property: "og:description", content: "Log gallons and tank levels in seconds." },
     ],
   }),
   component: () => (
@@ -39,7 +39,6 @@ function FuelEntryPage() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [form, setForm] = useState({
     machine_id: "",
-    volume_gal: "",
     before: 40,
     after: 90,
     notes: "",
@@ -59,9 +58,23 @@ function FuelEntryPage() {
     );
   }
 
+  const selected = machines.find((m) => m.id === form.machine_id) as
+    | { tank_capacity_gal?: number | null }
+    | undefined;
+  const capacity = Number(selected?.tank_capacity_gal ?? 0);
+  const volumeGal = Math.round(((form.after - form.before) / 100) * capacity * 10) / 10;
+
   async function submit() {
-    if (!form.machine_id || !(Number(form.volume_gal) > 0 && Number.isFinite(Number(form.volume_gal)))) {
-      toast.error("Choose a machine and enter the volume");
+    if (!form.machine_id) {
+      toast.error("Choose a machine");
+      return;
+    }
+    if (form.after < form.before) {
+      toast.error("Fuel after must be equal to or higher than fuel before");
+      return;
+    }
+    if (!(volumeGal > 0)) {
+      toast.error("Volume is zero — raise the 'after' level or check the machine's tank size");
       return;
     }
     setBusy(true);
@@ -70,8 +83,7 @@ function FuelEntryPage() {
       machine_id: form.machine_id,
       hub_id: machine?.hub_id ?? hubId ?? 1,
       operator_id: profile?.id ?? null,
-      volume_litres: Number(form.volume_gal) * LITRES_PER_GAL,
-      cost_usd: Number(form.volume_gal) * LITRES_PER_GAL * 0.95,
+      volume_litres: volumeGal * LITRES_PER_GAL,
       fuel_level_before: form.before,
       fuel_level_after: form.after,
       location_lat: coords?.lat ?? null,
@@ -94,12 +106,12 @@ function FuelEntryPage() {
         entity: "fuel_log",
         entity_ref: machine?.unit_id ?? null,
         hub_id: machine?.hub_id ?? hubId ?? null,
-        detail: `${form.volume_gal} gal`,
+        detail: `${volumeGal} gal`,
       });
     }
     qc.invalidateQueries({ queryKey: ["fuel_logs"] });
     qc.invalidateQueries({ queryKey: ["my-machines"] });
-    setDone({ unit: machine?.unit_id ?? "", volume: Number(form.volume_gal) });
+    setDone({ unit: machine?.unit_id ?? "", volume: volumeGal });
 
   }
 
@@ -116,7 +128,7 @@ function FuelEntryPage() {
               className={`${btn.primary} h-11`}
               onClick={() => {
                 setDone(null);
-                setForm({ ...form, volume_gal: "", notes: "" });
+                setForm({ ...form, notes: "" });
               }}
             >
               Submit another
@@ -147,16 +159,6 @@ function FuelEntryPage() {
             </select>
           </label>
 
-          <label className="block text-[11px] text-muted-foreground">
-            Volume (gal)
-            <input
-              className={`${inputCls} num h-14 text-2xl`}
-              inputMode="decimal"
-              value={form.volume_gal}
-              onChange={(e) => setForm({ ...form, volume_gal: e.target.value })}
-            />
-          </label>
-
           <div className="space-y-4">{(["before", "after"] as const).map((k) => (
             <label key={k} className="block text-[11px] text-muted-foreground">
               Fuel level {k}: <span className="num text-foreground">{form[k]}%</span>
@@ -169,7 +171,19 @@ function FuelEntryPage() {
                 className="mt-2 w-full accent-[#2ea043]"
               />
             </label>
-          ))}</div>
+          ))}
+            <div className="block text-[11px] text-muted-foreground">
+              Volume (gal) — calculated
+              <div className={`${inputCls} num flex h-14 items-center text-2xl opacity-80`} aria-readonly="true">
+                {form.machine_id ? volumeGal : "—"}
+              </div>
+              {form.after < form.before ? (
+                <p className="mt-1 text-destructive">Fuel after must be ≥ fuel before.</p>
+              ) : form.machine_id ? (
+                <p className="mt-1">({form.after}% − {form.before}%) × {capacity} gal tank</p>
+              ) : null}
+            </div>
+          </div>
 
           <div>
             <button className={`${btn.secondary} h-11`} onClick={detect}>

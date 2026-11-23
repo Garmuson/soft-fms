@@ -58,6 +58,7 @@ function GeofencesPage() {
   const { data: machines = [] } = useQuery(machinesQuery(scope));
 
   const [selected, setSelected] = useState<string | null>(null);
+  const [locating, setLocating] = useState(false);
   const [draft, setDraft] = useState<{
     name: string;
     hub_id: number | "";
@@ -246,6 +247,36 @@ function GeofencesPage() {
                   ))}
                 </select>
               )}
+              <button
+                type="button"
+                className={`${btn.secondary} h-10 w-full justify-center`}
+                disabled={locating}
+                onClick={() => {
+                  if (!navigator.geolocation) {
+                    toast.error("Location is not available on this device");
+                    return;
+                  }
+                  setLocating(true);
+                  navigator.geolocation.getCurrentPosition(
+                    (p) => {
+                      setLocating(false);
+                      setDraft((d) => ({ ...d, lat: p.coords.latitude.toFixed(5), lng: p.coords.longitude.toFixed(5) }));
+                      toast.success("Location filled in");
+                    },
+                    (err) => {
+                      setLocating(false);
+                      toast.error(
+                        err.code === err.PERMISSION_DENIED
+                          ? "Location permission denied — allow location in your browser settings"
+                          : "Your location is unavailable right now",
+                      );
+                    },
+                    { enableHighAccuracy: true, timeout: 15000 },
+                  );
+                }}
+              >
+                {locating ? "Locating…" : "Use My Current Location"}
+              </button>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   className={inputCls}
